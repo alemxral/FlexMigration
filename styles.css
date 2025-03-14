@@ -398,19 +398,7 @@ th {
     text-align: right;
 }
 
-.btn-save {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    background-color: #28a745;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-}
 
-.btn-save:hover {
-    background-color: #218838;
-}
 
 /* Vlookup Section Styling */
 #vlookup-wrapper {
@@ -427,6 +415,7 @@ th {
     font-size: 14px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    color: #000;
 }
 
 .btn-add-vlookup {
@@ -445,11 +434,13 @@ th {
 .active-vlookups ul {
     list-style-type: none;
     padding: 0;
+    color: #000;
 }
 
 .active-vlookups li {
     padding: 5px 0;
     cursor: pointer;
+    color: #000;
 }
 
 .active-vlookups li:hover {
@@ -460,6 +451,7 @@ th {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
+    color: #000;
 }
 
 #vlookupContentTable th,
@@ -467,11 +459,13 @@ th {
     border: 1px solid #ddd;
     padding: 10px;
     text-align: left;
+    color: #000;
 }
 
 #vlookupContentTable th {
     background-color: #f4f4f4;
     font-weight: bold;
+    color: #000;
 }
 
 .header-select {
@@ -480,13 +474,14 @@ th {
     font-size: 14px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    color: #000;
 }
 
 .btn-add-vlookup-import,
 .btn-add-vlookup {
     padding: 8px 16px;
-    background-color: #007bff;
-    color: white;
+    background-color: var(--accent-color);
+    color: var(--primary-bg);
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -494,5 +489,5 @@ th {
 
 .btn-add-vlookup-import:hover,
 .btn-add-vlookup:hover {
-    background-color: #0056b3;
+    background-color: var(--gray-medium);
 }
