@@ -277,6 +277,7 @@ document.addEventListener("DOMContentLoaded", function () {
 let isMappingInitialized = false;
 
 // Function to render the mapping table
+// Function to render the mapping table
 function renderMappingTable() {
     const tableBody = document.getElementById('mappingTableBody');
     if (!tableBody) {
@@ -303,7 +304,7 @@ function renderMappingTable() {
         const inputSelect = document.createElement('select');
         inputSelect.className = 'header-select';
 
-        // Add an empty option for cases where there is no corresponding header
+        // Add an empty option as the default selection
         const inputEmptyOption = document.createElement('option');
         inputEmptyOption.value = '';
         inputEmptyOption.textContent = '-- Select Input Header --';
@@ -317,10 +318,8 @@ function renderMappingTable() {
             inputSelect.appendChild(option);
         });
 
-        // Pre-select the current header if available
-        if (i < inputHeaders.length) {
-            inputSelect.value = inputHeaders[i];
-        }
+        // Set the default value to nothing (empty string)
+        inputSelect.value = '';
 
         inputCell.appendChild(inputSelect);
 
@@ -329,7 +328,7 @@ function renderMappingTable() {
         const outputSelect = document.createElement('select');
         outputSelect.className = 'header-select';
 
-        // Add an empty option for cases where there is no corresponding header
+        // Add an empty option as the default selection
         const outputEmptyOption = document.createElement('option');
         outputEmptyOption.value = '';
         outputEmptyOption.textContent = '-- Select Output Header --';
@@ -343,10 +342,8 @@ function renderMappingTable() {
             outputSelect.appendChild(option);
         });
 
-        // Pre-select the current header if available
-        if (i < outputHeaders.length) {
-            outputSelect.value = outputHeaders[i];
-        }
+        // Set the default value to nothing (empty string)
+        outputSelect.value = '';
 
         outputCell.appendChild(outputSelect);
 
