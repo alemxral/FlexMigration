@@ -337,3 +337,77 @@ th {
         transform: translateX(0);
     }
 }
+/* General Section Styling */
+#mapping-wrapper {
+    padding: 20px;
+    max-height: 100%; /* Ensure it fits within the viewport */
+    overflow: hidden; /* Prevent overflow issues */
+}
+
+/* Table Container Styling */
+.table-container {
+    max-height: 400px; /* Limit height for scrollability */
+    overflow-y: auto; /* Enable vertical scrolling if needed */
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    position: relative; /* Ensure dropdowns can overflow properly */
+    z-index: 1; /* Ensure table stays above other content */
+}
+
+/* Table Styling */
+.mapping-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed; /* Ensure consistent column widths */
+}
+
+.mapping-table th,
+.mapping-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+    white-space: nowrap; /* Prevent text wrapping */
+    overflow: hidden; /* Handle overflow gracefully */
+    text-overflow: ellipsis; /* Add ellipsis for long text */
+}
+
+.mapping-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+/* Dropdown Styling */
+.mapping-table select {
+    width: 100%; /* Fill the cell */
+    padding: 5px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    cursor: pointer;
+}
+
+.mapping-table option {
+    padding: 5px;
+    font-size: 14px;
+}
+
+/* Action Buttons Styling */
+.action-buttons {
+    text-align: right;
+}
+
+.btn-save {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #28a745;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.btn-save:hover {
+    background-color: #218838;
+}
