@@ -3,8 +3,15 @@
 import { renderTable, createNotification } from "./utils.js";
 
 // Import the initialized instances
-import { inputFrame, outputFrame, mapping, activeVlookups } from "./instances.js";
-
+// Import the initialized instances
+import { 
+    inputFrame, 
+    outputFrame, 
+    mapping, 
+    activeVlookups, 
+    Vlookup as VlookupClass, // Rename the Vlookup class to avoid conflicts
+    vlookupManager // Use the renamed instance from instances.js
+} from "./instances.js";
 // Track the DataTables instance globally for both sections
 let dataTableInstance = null;
 
@@ -151,4 +158,71 @@ document.getElementById('fileDiscard')?.addEventListener('click', function () {
 
     // Show notification
     createNotification("File discarded.");
+});
+
+document.getElementById('addVlookupButtonImport')?.addEventListener('click', async () => {
+    const dropdown = document.getElementById('vlookupHeaderDropdown');
+    const selectedHeader = dropdown.value;
+
+    if (!selectedHeader) {
+        createNotification("Please select an OutputFrame header.");
+        return;
+    }
+
+    // Trigger file input dialog
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = '.xlsx,.xls';
+
+    fileInput.addEventListener('change', async (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        try {
+            // Parse the uploaded Excel file
+            const reader = new FileReader();
+
+            reader.onload = async (e) => {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: "array" });
+                    const sheetName = workbook.SheetNames[0];
+                    const sheet = workbook.Sheets[sheetName];
+
+                    // Convert the sheet to JSON
+                    const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+                    // Extract headers and data
+                    const headers = jsonData[0];
+                    const rows = jsonData.slice(1).map(row => {
+                        const rowData = {};
+                        headers.forEach((header, index) => {
+                            rowData[header] = row[index];
+                        });
+                        return rowData;
+                    });
+
+                    // Save the JSON data in the VlookupManager
+                    vlookupManager.addVlookup(selectedHeader, { headers, rows });
+
+                    createNotification(`Excel file imported and saved for header: ${selectedHeader}`);
+                } catch (error) {
+                    console.error("Error processing Excel file:", error);
+                    createNotification("Error importing Excel file. Please try again.");
+                }
+            };
+
+            reader.onerror = () => {
+                console.error("Error reading file.");
+                createNotification("Error reading file.");
+            };
+
+            reader.readAsArrayBuffer(file);
+        } catch (error) {
+            console.error("Error uploading file:", error);
+            createNotification("Error uploading file. Please try again.");
+        }
+    });
+
+    fileInput.click(); // Open file selection dialog
 });

@@ -1,8 +1,15 @@
 // logic.js
 
 // Import the initialized instances
-import { inputFrame, outputFrame, mapping, activeVlookups } from "./instances.js";
-
+// Import the initialized instances
+import { 
+    inputFrame, 
+    outputFrame, 
+    mapping, 
+    activeVlookups, 
+    Vlookup as VlookupClass, // Rename the Vlookup class to avoid conflicts
+    vlookupManager// Use the renamed instance from instances.js
+} from "./instances.js";
 // Import shared functions from utils.js
 import { renderTable, createNotification } from "./utils.js";
 
@@ -230,3 +237,175 @@ document.getElementById('outputFileInput')?.addEventListener('change', async (ev
     }
 });
 
+// Track whether the Vlookup section has been initialized
+let isVlookupInitialized = false;
+
+// Function to populate the dropdown with OutputFrame headers
+function populateVlookupDropdown() {
+    const dropdown = document.getElementById('vlookupHeaderDropdown');
+    if (!dropdown) {
+        console.error("Dropdown element not found.");
+        return;
+    }
+
+    // Clear previous options
+    dropdown.innerHTML = '';
+
+    // Add default option
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    defaultOption.textContent = '-- Select OutputFrame Header --';
+    dropdown.appendChild(defaultOption);
+
+    // Get headers from OutputFrame
+    const outputHeaders = outputFrame.headers || [];
+
+    // Check if headers are available
+    if (outputHeaders.length === 0) {
+        console.warn("Cannot populate Vlookup dropdown: Missing headers from OutputFrame.");
+        createNotification("Cannot populate Vlookup dropdown: Missing headers.");
+        return;
+    }
+
+    // Populate the dropdown with OutputFrame headers
+    outputHeaders.forEach((header) => {
+        const option = document.createElement('option');
+        option.value = header;
+        option.textContent = header;
+        dropdown.appendChild(option);
+    });
+}
+
+// Function to add a new Vlookup
+document.getElementById('addVlookupButton')?.addEventListener('click', () => {
+    const dropdown = document.getElementById('vlookupHeaderDropdown');
+    const selectedHeader = dropdown.value;
+
+    if (!selectedHeader) {
+        createNotification("Please select an OutputFrame header.");
+        return;
+    }
+
+    // Check if a Vlookup already exists for the selected header
+    if (vlookupManager.getVlookup(selectedHeader)) {
+        createNotification(`Vlookup already exists for header: ${selectedHeader}`);
+        return;
+    }
+
+    // Add a placeholder Vlookup (if no file is uploaded yet)
+    vlookupManager.addVlookup(selectedHeader, { headers: [], rows: [] });
+
+    // Update the active Vlookups list
+    updateActiveVlookupsList();
+    createNotification(`Vlookup added for header: ${selectedHeader}`);
+});
+
+function updateActiveVlookupsList() {
+    const list = document.getElementById('activeVlookupsList');
+    if (!list) return;
+
+    // Clear previous content
+    list.innerHTML = '';
+
+    const vlookups = vlookupManager.getAllVlookups();
+    Object.keys(vlookups).forEach((header) => {
+        const listItem = document.createElement('li');
+        listItem.textContent = `Vlookup for ${header}`;
+        listItem.addEventListener('click', () => {
+            displayVlookupContent(header);
+        });
+        list.appendChild(listItem);
+    });
+}
+
+// Function to display Vlookup content in the table
+function displayVlookupContent(header) {
+    const tableBody = document.getElementById('vlookupContentBody');
+    if (!tableBody) return;
+
+    // Clear previous content
+    tableBody.innerHTML = '';
+
+    // Get the Vlookup data for the selected header
+    const vlookupData = vlookupManager.getVlookup(header);
+    if (!vlookupData) {
+        createNotification(`No Vlookup data found for header: ${header}`);
+        return;
+    }
+
+    const { headers, rows } = vlookupData;
+
+    // Create table header
+    const headerRow = document.createElement('tr');
+    headers.forEach((headerText) => {
+        const th = document.createElement('th');
+        th.textContent = headerText;
+        headerRow.appendChild(th);
+    });
+    tableBody.appendChild(headerRow);
+
+    // Create table body
+    rows.forEach((row) => {
+        const tr = document.createElement('tr');
+        headers.forEach((headerText) => {
+            const td = document.createElement('td');
+            td.textContent = row[headerText] || '';
+            tr.appendChild(td);
+        });
+        tableBody.appendChild(tr);
+    });
+}
+
+// Initialize the Vlookup section when clicked in the navigation menu
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        // Add click event listeners to navigation items
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach(navItem => {
+            navItem.addEventListener('click', async () => {
+                const sectionId = navItem.getAttribute('data-section');
+
+                // Check if the clicked section is "vlookup"
+                if (sectionId === 'vlookup' && !isVlookupInitialized) {
+                    // Load headers into OutputFrame
+                    await loadOutputFrameHeaders();
+
+                    // Populate the dropdown with OutputFrame headers
+                    populateVlookupDropdown();
+
+                    // Mark the Vlookup section as initialized
+                    isVlookupInitialized = true;
+                }
+            });
+        });
+    } catch (error) {
+        console.error("Error initializing Vlookup section:", error);
+        createNotification("Error loading headers for Vlookup.");
+    }
+});
+
+// Function to load OutputFrame headers
+async function loadOutputFrameHeaders() {
+    try {
+        // Option 1: Load from a file upload (if available)
+        const fileInput = document.getElementById('outputFileInput');
+        if (fileInput && fileInput.files.length > 0) {
+            await outputFrame.loadFromFile(fileInput.files[0]);
+        } 
+        // Option 2: Fetch headers from the server
+        else {
+            const response = await fetch('/api/load-outputframe');
+            if (!response.ok) {
+                throw new Error(`Failed to load OutputFrame.json: ${response.status}`);
+            }
+            const jsonData = await response.json();
+            outputFrame.headers = jsonData.headers || [];
+            outputFrame.data = jsonData.data || [];
+        }
+
+        console.log("OutputFrame headers loaded successfully.");
+    } catch (error) {
+        console.error("Error loading OutputFrame headers:", error);
+        throw error;
+    }
+}
