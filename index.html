@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Migration Tool</title>
+    <link rel="stylesheet" href="./styles.css">
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+   
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+
+
+
+</head>
+<body>
+    <div class="wrapper">
+
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>Flex Migration</h1>
+            </div>
+            <ul class="nav-items">
+                <li class="nav-item" data-section="input">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    Input
+                </li>
+                <li class="nav-item" data-section="output">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M3 15v4a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4M17 10l-5 5-5-5M12 15V3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    Output
+                </li>
+                <li class="nav-item" data-section="mapping">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M8 7h12M8 12h12M8 17h12M4 7h0M4 12h0M4 17h0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    Mapping
+                </li>
+                <li class="nav-item" data-section="flexrules">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    FlexRules
+                </li>
+                <li class="nav-item" data-section="options">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    Options
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main>
+            <!-- Wrappers for Each Section -->
+            <div id="input-wrapper" class="section-wrapper">
+                <h2>Input Section</h2>
+            
+                <!-- Import Excel Button -->
+                <div class="file-upload">
+                    <label for="fileInput" class="file-label">Import Excel</label>
+                    <input type="file" id="fileInput" accept=".xlsx, .xls" hidden>
+                </div>
+            
+                <!-- File Info and Preview -->
+                <div id="fileInfo" class="file-info"></div>
+                <div id="tableWrapper" class="table-wrapper">
+                    <h3>Input File Preview</h3>
+                    <table id="excelTable" class="display">
+                        <thead></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div id="fileButtons" class="file-btn" style="display: none;">
+                    <button id="fileSave" class="file-btn-action save-btn">Save</button>
+                    <button id="fileDiscard" class="file-btn-action file-discard">Discard</button>
+                </div>
+            </div>
+            
+            <div id="output-wrapper" class="section-wrapper">
+                <h2>Output Section</h2>
+                <p>This is the output section content.</p>
+            </div>
+            <div id="mapping-wrapper" class="section-wrapper">
+                <h2>Mapping Section</h2>
+                <p>This is the mapping section content.</p>
+            </div>
+            <div id="flexrules-wrapper" class="section-wrapper">
+                <h2>FlexRules Section</h2>
+                <p>This is the flexrules section content.</p>
+            </div>
+            <div id="options-wrapper" class="section-wrapper">
+                <h2>Options Section</h2>
+                <p>This is the options section content.</p>
+            </div>
+        </main>
+    </div>
+
+
+
+            <!-- Notification Panel -->
+        <div id="notificationPanel" class="notification-panel"></div>
+   
+    <script src="script.js"></script>
+</body>
+</html>
