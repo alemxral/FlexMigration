@@ -3,7 +3,28 @@
 // Track DataTables instances for each table
 const dataTableInstances = {};
 
+function resetTable(tableId) {
+    const table = document.getElementById(tableId);
+    if (!table) {
+        console.error(`Table element with ID "${tableId}" not found.`);
+        return;
+    }
+
+    const thead = table.querySelector("thead");
+    const tbody = table.querySelector("tbody");
+
+    // Destroy existing DataTables instance if it exists
+    if ($.fn.DataTable.isDataTable(`#${tableId}`)) {
+        $(`#${tableId}`).DataTable().clear().destroy();
+    }
+
+    // Clear previous content
+    thead.innerHTML = "";
+    tbody.innerHTML = "";
+}
+
 export function renderTable(data, headers, tableId) {
+    resetTable(tableId); 
     const table = document.getElementById(tableId);
     if (!table) {
         console.error(`Table element with ID "${tableId}" not found.`);
@@ -18,6 +39,10 @@ export function renderTable(data, headers, tableId) {
         dataTableInstances[tableId].clear(); // Clear the data from the table
         dataTableInstances[tableId].destroy(true); // Fully destroy the instance
         dataTableInstances[tableId] = null; // Reset the reference
+    }
+      // Destroy existing DataTables instance if it exists
+      if ($.fn.DataTable.isDataTable(`#${tableId}`)) {
+        $(`#${tableId}`).DataTable().clear().destroy(); // Clear and destroy the existing DataTable
     }
 
     // Clear previous content

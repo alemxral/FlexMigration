@@ -109,14 +109,26 @@ document.getElementById('fileDiscard')?.addEventListener('click', function () {
 });
 
 // Save Button - Adds a loading spinner effect for Output section
-document.getElementById('outputFileSave')?.addEventListener('click', function () {
+document.getElementById('outputFileSave')?.addEventListener('click', async function () {
     const outputFileSave = document.getElementById('outputFileSave');
     if (!outputFileSave) return;
+
+    // Show loading spinner
     outputFileSave.innerHTML = '<span class="loader"></span> Saving...';
-    setTimeout(() => {
+
+    try {
+        // Save the current data to the server
+        await outputFrame.saveToServer("api/save-data-OutputFrame");
+
+        // Update the button text and show success notification
         outputFileSave.innerHTML = "Save";
-        createNotification("File saved successfully!");
-    }, 1500);
+        createNotification("File saved to server successfully!");
+    } catch (error) {
+        // Handle errors and show an error notification
+        console.error("Error saving file to server:", error.message);
+        outputFileSave.innerHTML = "Save";
+        // createNotification("Error saving file to server. Please try again.");
+    }
 });
 
 document.getElementById('fileDiscard')?.addEventListener('click', function () {

@@ -69,7 +69,7 @@ while ($true) {
         [System.Text.Encoding]::UTF8.GetBytes("{'status': 'success'}") | ForEach-Object { $response.OutputStream.Write($_, 0, $_.Length) }
     }
         # API: Save JSON Data for OutputFrame
-        elseif ($request.HttpMethod -eq "POST" -and $path -eq "api/save-data-InputFrame") {
+        elseif ($request.HttpMethod -eq "POST" -and $path -eq "api/save-data-OutputFrame") {
         $reader = New-Object System.IO.StreamReader($request.InputStream)
         $jsonData = $reader.ReadToEnd()
         $reader.Close()
@@ -83,6 +83,18 @@ while ($true) {
     # API: Load InputFrame.json
     elseif ($request.HttpMethod -eq "GET" -and $path -eq "api/load-inputframe") {
         $filePath = "$dataDir\InputFrame.json"
+        if (Test-Path $filePath) {
+            $jsonContent = Get-Content -Path $filePath -Raw
+            $response.ContentType = "application/json"
+            [System.Text.Encoding]::UTF8.GetBytes($jsonContent) | ForEach-Object { $response.OutputStream.Write($_, 0, $_.Length) }
+        } else {
+            $response.StatusCode = 404
+            [System.Text.Encoding]::UTF8.GetBytes("{'status': 'error', 'message': 'File not found'}") | ForEach-Object { $response.OutputStream.Write($_, 0, $_.Length) }
+        }
+    }
+        # API: Load InputFrame.json
+    elseif ($request.HttpMethod -eq "GET" -and $path -eq "api/load-outputframe") {
+        $filePath = "$dataDir\OutputFrame.json"
         if (Test-Path $filePath) {
             $jsonContent = Get-Content -Path $filePath -Raw
             $response.ContentType = "application/json"
