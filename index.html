@@ -132,7 +132,27 @@
             </div>
             <div id="options-wrapper" class="section-wrapper">
                 <h2>Options Section</h2>
-                <p>This is the options section content.</p>
+                <p>This is the output section content.</p>
+            
+                <!-- Import Excel Button -->
+                <div class="file-upload">
+                    <label for="outputFileInput" class="file-label">Output Frame</label>
+                    <input type="file" id="outputFileInput" accept=".xlsx, .xls" hidden>
+                </div>
+            
+                <!-- File Info and Preview -->
+                <div id="outputFileInfo" class="file-info"></div>
+                <div id="outputTableWrapper" class="table-wrapper">
+                    <h3>Output Frame Preview</h3>
+                    <table id="outputExcelTable" class="display">
+                        <thead></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div id="outputFileButtons" class="file-btn">
+                    <button id="outputFileSave" class="file-btn-action save-btn">Save</button>
+                    <button id="outputFileDiscard" class="file-btn-action discard-btn">Discard</button>
+                </div>
             </div>
         </main>
     </div>

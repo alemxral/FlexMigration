@@ -191,9 +191,15 @@ main {
     color: var(--text-color);
 }
 
+
+/* Hide the "Export to Excel" button */
+.dt-buttons .buttons-excel {
+    display: none;
+}
+
 /* Table Wrapper */
 .table-wrapper {
-    max-height: 400px; /* Limits the height of the table wrapper */
+    max-height: 800px; /* Limits the height of the table wrapper */
     overflow-x: auto; /* Enables horizontal scrolling if the table is too wide */
     overflow-y: auto; /* Enables vertical scrolling if the table is too tall */
     margin-top: 20px;

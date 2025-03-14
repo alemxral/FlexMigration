@@ -1,10 +1,13 @@
 import InputFrame from "./InputFrame.js";
+import OutputFrame from "./OutputFrame.js";
 
-// Initialize the InputFrame instance
+// Initialize the InputFrame and OutputFrame instances
 const inputFrame = new InputFrame();
-console.log("InputFrame loaded successfully!");
+const outputFrame = new OutputFrame();
 
-// Track the DataTables instance globally
+console.log("InputFrame and OutputFrame loaded successfully!");
+
+// Track the DataTables instance globally for both sections
 let dataTableInstance = null;
 
 // Get all navigation items and section wrappers
@@ -45,8 +48,8 @@ document.addEventListener('DOMContentLoaded', () => {
     activateSection('input'); // Default active section
 });
 
-// Handle file upload and display in the table
-document.getElementById('fileInput').addEventListener('change', async (event) => {
+// Handle file upload and display in the table for the Input section
+document.getElementById('fileInput')?.addEventListener('change', async (event) => {
     const file = event.target.files[0];
     if (!file) return;
 
@@ -56,13 +59,41 @@ document.getElementById('fileInput').addEventListener('change', async (event) =>
 
         // Show file details
         const fileInfo = document.getElementById('fileInfo');
-        fileInfo.innerHTML = `📄 <strong>File:</strong> ${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
+        if (fileInfo) {
+            fileInfo.innerHTML = `📄 <strong>File:</strong> ${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
+        }
 
         // Display headers
         inputFrame.displayHeaders();
 
         // Render the table using the parsed data
-        renderTable(inputFrame.getData(), inputFrame.headers);
+        renderTable(inputFrame.getData(), inputFrame.headers, 'excelTable');
+    } catch (error) {
+        console.error("Error processing file:", error);
+        createNotification("Error loading file. Please try again.");
+    }
+});
+
+// Handle file upload and display in the table for the Options section
+document.getElementById('outputFileInput')?.addEventListener('change', async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    try {
+        // Load the file into the OutputFrame instance
+        await outputFrame.loadFromFile(file);
+
+        // Show file details
+        const fileInfo = document.getElementById('outputFileInfo');
+        if (fileInfo) {
+            fileInfo.innerHTML = `📄 <strong>File:</strong> ${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
+        }
+
+        // Display headers
+        outputFrame.displayHeaders();
+
+        // Render the table using the parsed data
+        renderTable(outputFrame.getData(), outputFrame.headers, 'outputExcelTable');
     } catch (error) {
         console.error("Error processing file:", error);
         createNotification("Error loading file. Please try again.");
@@ -70,15 +101,21 @@ document.getElementById('fileInput').addEventListener('change', async (event) =>
 });
 
 // Function to render the table
-function renderTable(data, headers) {
-    const table = document.getElementById('excelTable');
+function renderTable(data, headers, tableId) {
+    const table = document.getElementById(tableId);
+    if (!table) {
+        console.error(`Table element with ID "${tableId}" not found.`);
+        return;
+    }
+
     const thead = table.querySelector("thead");
     const tbody = table.querySelector("tbody");
 
     // Destroy existing DataTables instance if it exists
     if (dataTableInstance) {
-        dataTableInstance.destroy();
-        dataTableInstance = null;
+        dataTableInstance.clear(); // Clear the data from the table
+        dataTableInstance.destroy(true); // Fully destroy the instance
+        dataTableInstance = null; // Reset the reference
     }
 
     // Clear previous content
@@ -106,44 +143,58 @@ function renderTable(data, headers) {
     });
 
     // Reinitialize DataTables
-    dataTableInstance = $('#excelTable').DataTable({
+    dataTableInstance = $(`#${tableId}`).DataTable({
         dom: '<"dt-buttons"Bf><"clear">lirtp',
         paging: true,
         autoWidth: true,
-        buttons: [{
-            extend: 'excelHtml5',
-            text: 'Export to Excel',
-            customize: function (xlsx) {
-                const sheet = xlsx.xl.worksheets['sheet1.xml'];
-
-                // Format cells (e.g., change styles, highlight specific values)
-                $('row c[r^="E"]', sheet).each(function () {
-                    const cellValue = $('is t', this).text();
-                    if (parseFloat(cellValue) > 1500) {
-                        $(this).attr('s', '17'); // Style formatting
-                    }
-                });
+        buttons: [
+            {
+                extend: 'csv', // Include CSV export instead of Excel
+                text: 'Export to CSV'
             }
-        }]
+        ]
     });
 }
 
-// Save Button - Adds a loading spinner effect
-document.getElementById('fileSave').addEventListener('click', function () {
+// Save Button - Adds a loading spinner effect for Input section
+document.getElementById('fileSave')?.addEventListener('click', function () {
     const fileSave = document.getElementById('fileSave');
+    if (!fileSave) return;
+
     fileSave.innerHTML = '<span class="loader"></span> Saving...';
     setTimeout(() => {
         fileSave.innerHTML = "Save";
 
-     
+        // Save the current data back to an Excel file
+        inputFrame.saveToFile("input_output.xlsx");
 
         // Show notification
         createNotification("File saved successfully!");
     }, 1500);
 });
 
-document.getElementById('fileDiscard').addEventListener('click', function () {
+// Save Button - Adds a loading spinner effect for Options section
+document.getElementById('outputFileSave')?.addEventListener('click', function () {
+    const outputFileSave = document.getElementById('outputFileSave');
+    if (!outputFileSave) return;
+
+    outputFileSave.innerHTML = '<span class="loader"></span> Saving...';
+    setTimeout(() => {
+        outputFileSave.innerHTML = "Save";
+
+        // Save the current data back to an Excel file
+        outputFrame.saveToFile("output_file.xlsx");
+
+        // Show notification
+        createNotification("File saved successfully!");
+    }, 1500);
+});
+
+// Discard Button - Clears table content for Input section
+document.getElementById('fileDiscard')?.addEventListener('click', function () {
     const table = document.getElementById('excelTable');
+    if (!table) return;
+
     const thead = table.querySelector("thead");
     const tbody = table.querySelector("tbody");
 
@@ -154,7 +205,35 @@ document.getElementById('fileDiscard').addEventListener('click', function () {
     // Destroy existing DataTables instance if it exists
     if (dataTableInstance) {
         dataTableInstance.clear(); // Clear the data from the table
-        dataTableInstance.destroy(true); // Fully destroy the instance, including DOM elements
+        dataTableInstance.destroy(true); // Fully destroy the instance
+        dataTableInstance = null; // Reset the reference
+    }
+
+    // Show notification
+    createNotification("File discarded.");
+
+    // Refresh the page after a short delay
+    setTimeout(() => {
+        window.location.reload(); // Reload the page
+    }, 1000); // Delay of 1 second before refreshing
+});
+
+// Discard Button - Clears table content for Options section
+document.getElementById('outputFileDiscard')?.addEventListener('click', function () {
+    const table = document.getElementById('outputExcelTable');
+    if (!table) return;
+
+    const thead = table.querySelector("thead");
+    const tbody = table.querySelector("tbody");
+
+    // Clear both the header and body of the table
+    thead.innerHTML = "";
+    tbody.innerHTML = "";
+
+    // Destroy existing DataTables instance if it exists
+    if (dataTableInstance) {
+        dataTableInstance.clear(); // Clear the data from the table
+        dataTableInstance.destroy(true); // Fully destroy the instance
         dataTableInstance = null; // Reset the reference
     }
 
@@ -173,6 +252,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Function to create and display notifications
     window.createNotification = function (message) {
+        if (!notificationPanel) {
+            console.warn("Notification panel not found.");
+            return;
+        }
+
         const notification = document.createElement("div");
         notification.className = "notification";
         notification.textContent = message;
