@@ -193,34 +193,52 @@ main {
 
 /* Table Wrapper */
 .table-wrapper {
-    max-height: 400px;
-    overflow-x: auto;
-    overflow-y: auto;
+    max-height: 400px; /* Limits the height of the table wrapper */
+    overflow-x: auto; /* Enables horizontal scrolling if the table is too wide */
+    overflow-y: auto; /* Enables vertical scrolling if the table is too tall */
     margin-top: 20px;
-    border: 1px solid var(--border-color);
-    border-radius: 5px;
-    background: var(--secondary-bg);
-    padding-right: 15px;
+    border: 1px solid var(--border-color); /* Adds a border around the wrapper */
+    border-radius: 5px; /* Rounds the corners of the wrapper */
+    background: var(--secondary-bg); /* Background color for the wrapper */
+    padding: 15px; /* Adds padding inside the wrapper for better spacing */
 }
 
 /* Table Styling */
 table {
-    width: 100%;
-    border-collapse: collapse;
+    width: 100%; /* Ensures the table takes up the full width of its container */
+    border-collapse: collapse; /* Removes gaps between table borders */
+    min-width: 600px; /* Sets a minimum width to prevent excessive shrinking */
 }
 
 th, td {
-    border: 1px solid var(--border-color);
-    padding: 10px;
-    text-align: left;
-    color: var(--text-color);
+    border: 1px solid var(--border-color); /* Adds borders to cells */
+    padding: 12px; /* Increases padding for better readability */
+    text-align: left; /* Aligns text to the left */
+    color: var(--text-color); /* Text color for cells */
+    white-space: nowrap; /* Prevents text from wrapping to the next line */
 }
 
 th {
-    background-color: var(--gray-dark);
-    color: var(--accent-color);
-    position: sticky;
-    top: 0;
+    background-color: var(--gray-dark); /* Background color for headers */
+    color: var(--accent-color); /* Text color for headers */
+    position: sticky; /* Makes headers stick to the top during vertical scrolling */
+    top: 0; /* Ensures headers stay at the top of the wrapper */
+    z-index: 1; /* Ensures headers are above other content */
+}
+
+/* Scrollbar Styling (Optional) */
+.table-wrapper::-webkit-scrollbar {
+    width: 8px; /* Width of the scrollbar */
+    height: 8px; /* Height of the horizontal scrollbar */
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+    background: var(--border-color); /* Color of the scrollbar thumb */
+    border-radius: 4px; /* Rounds the corners of the scrollbar thumb */
+}
+
+.table-wrapper::-webkit-scrollbar-track {
+    background: var(--secondary-bg); /* Color of the scrollbar track */
 }
 
 /* H3 Title Styling */
@@ -248,6 +266,7 @@ th {
     width: 140px;
     text-align: center;
     font-weight: bold;
+    background-color: var(--accent-color);
 
 }
 

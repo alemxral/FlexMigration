@@ -1,3 +1,12 @@
+import InputFrame from "./InputFrame.js";
+
+// Initialize the InputFrame instance
+const inputFrame = new InputFrame();
+console.log("InputFrame loaded successfully!");
+
+// Track the DataTables instance globally
+let dataTableInstance = null;
+
 // Get all navigation items and section wrappers
 const navItems = document.querySelectorAll('.nav-item');
 const sectionWrappers = document.querySelectorAll('.section-wrapper');
@@ -36,123 +45,134 @@ document.addEventListener('DOMContentLoaded', () => {
     activateSection('input'); // Default active section
 });
 
-// Convert European to US currency format
-function EuToUsCurrencyFormat(input) {
-    return input.replace(/[,.]/g, function(x) {
-        return x === "," ? "." : ",";
+// Handle file upload and display in the table
+document.getElementById('fileInput').addEventListener('change', async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    try {
+        // Load the file into the InputFrame instance
+        await inputFrame.loadFromFile(file);
+
+        // Show file details
+        const fileInfo = document.getElementById('fileInfo');
+        fileInfo.innerHTML = `📄 <strong>File:</strong> ${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
+
+        // Display headers
+        inputFrame.displayHeaders();
+
+        // Render the table using the parsed data
+        renderTable(inputFrame.getData(), inputFrame.headers);
+    } catch (error) {
+        console.error("Error processing file:", error);
+        createNotification("Error loading file. Please try again.");
+    }
+});
+
+// Function to render the table
+function renderTable(data, headers) {
+    const table = document.getElementById('excelTable');
+    const thead = table.querySelector("thead");
+    const tbody = table.querySelector("tbody");
+
+    // Destroy existing DataTables instance if it exists
+    if (dataTableInstance) {
+        dataTableInstance.destroy();
+        dataTableInstance = null;
+    }
+
+    // Clear previous content
+    thead.innerHTML = "";
+    tbody.innerHTML = "";
+
+    // Create table header
+    const headerRow = document.createElement("tr");
+    headers.forEach(header => {
+        const th = document.createElement("th");
+        th.textContent = header;
+        headerRow.appendChild(th);
+    });
+    thead.appendChild(headerRow);
+
+    // Create table body
+    data.forEach(row => {
+        const tr = document.createElement("tr");
+        headers.forEach(header => {
+            const td = document.createElement("td");
+            td.textContent = row[header] || ""; // Handle undefined or null values
+            tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+    });
+
+    // Reinitialize DataTables
+    dataTableInstance = $('#excelTable').DataTable({
+        dom: '<"dt-buttons"Bf><"clear">lirtp',
+        paging: true,
+        autoWidth: true,
+        buttons: [{
+            extend: 'excelHtml5',
+            text: 'Export to Excel',
+            customize: function (xlsx) {
+                const sheet = xlsx.xl.worksheets['sheet1.xml'];
+
+                // Format cells (e.g., change styles, highlight specific values)
+                $('row c[r^="E"]', sheet).each(function () {
+                    const cellValue = $('is t', this).text();
+                    if (parseFloat(cellValue) > 1500) {
+                        $(this).attr('s', '17'); // Style formatting
+                    }
+                });
+            }
+        }]
     });
 }
 
-document.getElementById('fileInput').addEventListener('change', function(event) {
-    let file = event.target.files[0];
-    if (!file) return;
+// Save Button - Adds a loading spinner effect
+document.getElementById('fileSave').addEventListener('click', function () {
+    const fileSave = document.getElementById('fileSave');
+    fileSave.innerHTML = '<span class="loader"></span> Saving...';
+    setTimeout(() => {
+        fileSave.innerHTML = "Save";
 
-    // Show file details
-    let fileInfo = document.getElementById('fileInfo');
-    fileInfo.innerHTML = `📄 <strong>File:</strong> ${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
-
-    let reader = new FileReader();
-    reader.onload = function(e) {
-        let data = new Uint8Array(e.target.result);
-        let workbook = XLSX.read(data, { type: 'array' });
-
-        let sheetName = workbook.SheetNames[0];
-        let sheet = workbook.Sheets[sheetName];
-        let jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-
-        let table = document.getElementById('excelTable');
-        let thead = table.querySelector("thead");
-        let tbody = table.querySelector("tbody");
-
-        thead.innerHTML = "";
-        tbody.innerHTML = "";
-
-        // Create table header
-        let headerRow = document.createElement("tr");
-        jsonData[0].forEach(header => {
-            let th = document.createElement("th");
-            th.textContent = header;
-            headerRow.appendChild(th);
-        });
-        thead.appendChild(headerRow);
-
-        // Create table body
-        jsonData.slice(1).forEach(row => {
-            let tr = document.createElement("tr");
-            row.forEach(cell => {
-                let td = document.createElement("td");
-                let formattedValue = typeof cell === "string" ? EuToUsCurrencyFormat(cell) : cell;
-                td.textContent = formattedValue;
-                tr.appendChild(td);
-            });
-            tbody.appendChild(tr);
-        });
-
-        // Initialize DataTable
-        $('#excelTable').DataTable({
-            destroy: true, // Destroy any existing table instance
-            dom: '<"dt-buttons"Bf><"clear">lirtp',
-            paging: true,
-            autoWidth: true,
-            buttons: [{
-                extend: 'excelHtml5',
-                text: 'Export to Excel',
-                customize: function(xlsx) {
-                    let sheet = xlsx.xl.worksheets['sheet1.xml'];
-
-                    // Format cells (e.g., change styles, highlight specific values)
-                    $('row c[r^="E"]', sheet).each(function() {
-                        if (parseFloat(EuToUsCurrencyFormat($('is t', this).text())) > 1500) {
-                            $(this).attr('s', '17'); // Style formatting
-                        }
-                    });
-                }
-            }]
-        });
-    };
-
-    reader.readAsArrayBuffer(file);
-});
-
-
-
-
-document.addEventListener("DOMContentLoaded", function () {
-    const tableWrapper = document.getElementById("tableWrapper");
-    const fileButtons = document.getElementById("fileButtons");
-    const fileSave = document.getElementById("fileSave");
-    const fileDiscard = document.getElementById("fileDiscard");
-    const notificationPanel = document.getElementById("notificationPanel");
-
-    // Function to show buttons when file is loaded
-    function showButtons() {
-        fileButtons.style.display = "flex";
-    }
-
-    // Simulating file load (replace this with actual file loading logic)
-    setTimeout(showButtons, 1000); // Mock delay for loading
-
-    // Save Button - Adds a loading spinner effect
-    fileSave.addEventListener("click", function () {
-        fileSave.innerHTML = '<span class="loader"></span> Saving...';
-        setTimeout(() => {
-            fileSave.innerHTML = "Save";
-
-            // Show notification
-            createNotification("File saved successfully!");
-        }, 1500);
-    });
-
-    // Discard Button - Clears table content
-    fileDiscard.addEventListener("click", function () {
-        document.querySelector("#excelTable tbody").innerHTML = "";
+     
 
         // Show notification
-        createNotification("File discarded.");
-    });
+        createNotification("File saved successfully!");
+    }, 1500);
+});
+
+document.getElementById('fileDiscard').addEventListener('click', function () {
+    const table = document.getElementById('excelTable');
+    const thead = table.querySelector("thead");
+    const tbody = table.querySelector("tbody");
+
+    // Clear both the header and body of the table
+    thead.innerHTML = "";
+    tbody.innerHTML = "";
+
+    // Destroy existing DataTables instance if it exists
+    if (dataTableInstance) {
+        dataTableInstance.clear(); // Clear the data from the table
+        dataTableInstance.destroy(true); // Fully destroy the instance, including DOM elements
+        dataTableInstance = null; // Reset the reference
+    }
+
+    // Show notification
+    createNotification("File discarded.");
+
+    // Refresh the page after a short delay
+    setTimeout(() => {
+        window.location.reload(); // Reload the page
+    }, 1000); // Delay of 1 second before refreshing
+});
+
+// Notification Panel Logic
+document.addEventListener("DOMContentLoaded", function () {
+    const notificationPanel = document.getElementById("notificationPanel");
 
     // Function to create and display notifications
-    function createNotification(message) {
+    window.createNotification = function (message) {
         const notification = document.createElement("div");
         notification.className = "notification";
         notification.textContent = message;
@@ -164,5 +184,5 @@ document.addEventListener("DOMContentLoaded", function () {
         setTimeout(() => {
             notification.remove();
         }, 3000);
-    }
+    };
 });

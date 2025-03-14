@@ -1,24 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Migration Tool</title>
-    <link rel="stylesheet" href="./styles.css">
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-   
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
-
-
-
-</head>
+    <head>
+        <!-- Charset and Viewport -->
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+        <!-- Title -->
+        <title>Data Migration Tool</title>
+    
+        <!-- Favicon (Optional) -->
+        <link rel="icon" href="./favicon.ico" type="image/x-icon">
+    
+        <!-- Stylesheets -->
+        <link rel="stylesheet" href="./styles.css">
+        <!-- DataTables CSS -->
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+        <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+    
+        <!-- Meta Tags (Optional) -->
+        <meta name="description" content="A tool for managing data migration processes with input, mapping, and output features.">
+        <meta name="author" content="Your Name">
+    
+        <!-- Scripts -->
+        <!-- jQuery -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+        <!-- DataTables JS -->
+        <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+    
+        <!-- Required for Excel Export -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+        <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script> <!-- Added this line -->
+    
+        <!-- XLSX Library -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    </head>
 <body>
     <div class="wrapper">
 
@@ -44,7 +61,13 @@
                     <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                         <path d="M8 7h12M8 12h12M8 17h12M4 7h0M4 12h0M4 17h0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
-                    Mapping
+                    I/O Mapping
+                </li>
+                <li class="nav-item" data-section="fields-mapping">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M8 7h12M8 12h12M8 17h12M4 7h0M4 12h0M4 17h0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    Fields Mapping
                 </li>
                 <li class="nav-item" data-section="flexrules">
                     <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -73,6 +96,7 @@
                     <label for="fileInput" class="file-label">Import Excel</label>
                     <input type="file" id="fileInput" accept=".xlsx, .xls" hidden>
                 </div>
+             
             
                 <!-- File Info and Preview -->
                 <div id="fileInfo" class="file-info"></div>
@@ -83,10 +107,11 @@
                         <tbody></tbody>
                     </table>
                 </div>
-                <div id="fileButtons" class="file-btn" style="display: none;">
+                <div id="fileButtons" class="file-btn">
                     <button id="fileSave" class="file-btn-action save-btn">Save</button>
-                    <button id="fileDiscard" class="file-btn-action file-discard">Discard</button>
+                    <button id="fileDiscard" class="file-btn-action discard-btn">Discard</button>
                 </div>
+             
             </div>
             
             <div id="output-wrapper" class="section-wrapper">
@@ -95,6 +120,10 @@
             </div>
             <div id="mapping-wrapper" class="section-wrapper">
                 <h2>Mapping Section</h2>
+                <p>This is the mapping section content.</p>
+            </div>
+            <div id="fields-mapping-wrapper" class="section-wrapper">
+                <h2>Fields Mapping Section</h2>
                 <p>This is the mapping section content.</p>
             </div>
             <div id="flexrules-wrapper" class="section-wrapper">
@@ -113,6 +142,6 @@
             <!-- Notification Panel -->
         <div id="notificationPanel" class="notification-panel"></div>
    
-    <script src="script.js"></script>
+        <script type="module" src="script.js"></script>
 </body>
 </html>
