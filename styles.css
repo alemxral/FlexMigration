@@ -411,3 +411,88 @@ th {
 .btn-save:hover {
     background-color: #218838;
 }
+
+/* Vlookup Section Styling */
+#vlookup-wrapper {
+    padding: 20px;
+}
+
+.vlookup-creation {
+    margin-bottom: 20px;
+}
+
+.header-select {
+    width: 300px;
+    padding: 5px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.btn-add-vlookup {
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-add-vlookup:hover {
+    background-color: #0056b3;
+}
+
+.active-vlookups ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.active-vlookups li {
+    padding: 5px 0;
+    cursor: pointer;
+}
+
+.active-vlookups li:hover {
+    text-decoration: underline;
+}
+
+#vlookupContentTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+#vlookupContentTable th,
+#vlookupContentTable td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+#vlookupContentTable th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+.header-select {
+    width: 300px;
+    padding: 5px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.btn-add-vlookup-import,
+.btn-add-vlookup {
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-add-vlookup-import:hover,
+.btn-add-vlookup:hover {
+    background-color: #0056b3;
+}

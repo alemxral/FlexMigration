@@ -63,11 +63,11 @@
                     </svg>
                     I/O Mapping
                 </li>
-                <li class="nav-item" data-section="fields-mapping">
+                <li class="nav-item" data-section="vlookup">
                     <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                         <path d="M8 7h12M8 12h12M8 17h12M4 7h0M4 12h0M4 17h0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
-                    Fields Mapping
+                    Vlookup
                 </li>
                 <li class="nav-item" data-section="flexrules">
                     <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -141,9 +141,41 @@
                     <button id="saveMapping" class="file-btn-action save-btn">Save Mapping</button>
                 </div>
             </div>
-            <div id="fields-mapping-wrapper" class="section-wrapper">
-                <h2>Fields Mapping Section</h2>
-                <p>This is the mapping section content.</p>
+            <div id="vlookup-wrapper" class="section-wrapper">
+                <h2>Vlookup Section</h2>
+                <p>Create and manage Vlookups for OutputFrame headers.</p>
+            
+                <!-- Vlookup Creation -->
+                <div class="vlookup-creation">
+                    <h3>Create Vlookup</h3>
+                    <div class="flex gap-4 mb-4">
+                        <select id="vlookupHeaderDropdown" class="header-select">
+                            <option value="">-- Select OutputFrame Header --</option>
+                        </select>
+                        <button id="addVlookupButtonImport" class="btn-add-vlookup-import">Import Excel</button>
+                        <button id="addVlookupButton" class="btn-add-vlookup">Add Vlookup</button>
+                    </div>
+                </div>
+            
+                <!-- Active Vlookups -->
+                <div class="active-vlookups">
+                    <h3>Active Vlookups</h3>
+                    <ul id="activeVlookupsList"></ul>
+                </div>
+            
+                <!-- Vlookup Content Display -->
+                <div class="vlookup-content">
+                    <h3>Vlookup File Content</h3>
+                    <table id="vlookupContentTable" class="display">
+                        <thead>
+                            <tr>
+                                <th>OutputFrame Value</th>
+                                <th>Lookup Value</th>
+                            </tr>
+                        </thead>
+                        <tbody id="vlookupContentBody"></tbody>
+                    </table>
+                </div>
             </div>
             <div id="flexrules-wrapper" class="section-wrapper">
                 <h2>FlexRules Section</h2>
@@ -182,5 +214,7 @@
         <div id="notificationPanel" class="notification-panel"></div>
    
         <script type="module" src="script.js"></script>
+        <script type="module" src="logic.js"></script>
+        <script type="module" src="utils.js"></script>
 </body>
 </html>
