@@ -55,7 +55,7 @@ document.getElementById('fileSave')?.addEventListener('click', async () => {
     }
 
     try {
-        await inputFrame.saveToServer("/api/save-data");
+        await inputFrame.saveToServer("/api/save-data-InputFrame");
         createNotification("File saved to server successfully!");
     } catch (error) {
         console.error("Error saving to server:", error.message);

@@ -13,6 +13,39 @@ console.log("InputFrame and OutputFrame loaded successfully!");
 // Track whether the mapping table has been initialized
 let isMappingInitialized = false;
 
+
+// Function to fetch InputFrame.json from the server and render the table
+async function loadAndRenderTableFromServer() {
+    try {
+        // Fetch the JSON file from the server
+        const response = await fetch("/api/load-inputframe");
+        if (!response.ok) {
+            throw new Error(`Failed to load InputFrame.json: ${response.status}`);
+        }
+
+        // Parse the JSON response
+        const jsonData = await response.json();
+
+        // Extract headers and data from the JSON
+        const headers = jsonData.headers || [];
+        const data = jsonData.data || [];
+
+        // Render the table using the parsed data
+        renderTable(data, headers, 'excelTable');
+
+        console.log("Table rendered successfully with data from InputFrame.json");
+    } catch (error) {
+        console.error("Error loading InputFrame.json:", error.message);
+        createNotification("Error loading InputFrame.json. Please try again.");
+    }
+}
+
+// Call this function when needed (e.g., on page load or button click)
+document.addEventListener('DOMContentLoaded', () => {
+    // Example: Load and render the table when the page loads
+    loadAndRenderTableFromServer();
+});
+
 // Function to render the mapping table
 function renderMappingTable() {
     const tableBody = document.getElementById('mappingTableBody');
@@ -106,6 +139,9 @@ document.getElementById('saveMapping')?.addEventListener('click', () => {
     console.log("Mappings saved:", mapping.getMappings());
     createNotification("Mapping saved successfully!");
 });
+
+
+
 
 // Handle file upload and display in the table for the Input section
 document.getElementById('fileInput')?.addEventListener('change', async (event) => {
