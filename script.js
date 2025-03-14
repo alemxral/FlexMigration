@@ -2,6 +2,9 @@
 
 import { renderTable, createNotification } from "./utils.js";
 
+// Import the initialized instances
+import { inputFrame, outputFrame, mapping, activeVlookups } from "./instances.js";
+
 // Track the DataTables instance globally for both sections
 let dataTableInstance = null;
 
@@ -40,14 +43,42 @@ document.addEventListener('DOMContentLoaded', () => {
     activateSection('input'); // Default active section
 });
 
+document.getElementById('fileSave')?.addEventListener('click', async () => {
+    console.log("Current state of InputFrame:", {
+        headers: inputFrame.headers,
+        data: inputFrame.data,
+    });
+
+    if (inputFrame.data.length === 0) {
+        console.warn("No data to save. Please load a file first.");
+        return;
+    }
+
+    try {
+        await inputFrame.saveToServer("/api/save-data");
+        createNotification("File saved to server successfully!");
+    } catch (error) {
+        console.error("Error saving to server:", error.message);
+        // createNotification("Error saving file to server.");
+    }
+});
+
+
 // Save Button - Adds a loading spinner effect for Input section
 document.getElementById('fileSave')?.addEventListener('click', function () {
     const fileSave = document.getElementById('fileSave');
     if (!fileSave) return;
+
     fileSave.innerHTML = '<span class="loader"></span> Saving...';
+
     setTimeout(() => {
         fileSave.innerHTML = "Save";
-        createNotification("File saved successfully!");
+
+        // Save the processed data as a JSON file
+        // inputFrame.saveToJsonFile("InputFrame.json");
+
+        // Show notification
+        // createNotification("File saved successfully!");
     }, 1500);
 });
 

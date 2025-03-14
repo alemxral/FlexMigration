@@ -1,0 +1,25 @@
+14/03/2025 21:33:27 - PowerShell processes terminated.
+14/03/2025 21:33:27 - Script Path: C:\Users\pc\FlexMigration
+14/03/2025 21:33:27 - PowerShell Script Path: C:\Users\pc\FlexMigration\Server.ps1
+14/03/2025 21:33:27 - Executing: powershell -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "C:\Users\pc\FlexMigration\Server.ps1"
+14/03/2025 21:33:28 - Opening: chrome.exe http://localhost:8080/index.html
+14/03/2025 21:39:04 - PowerShell processes terminated.
+14/03/2025 21:39:04 - Script Path: C:\Users\pc\FlexMigration
+14/03/2025 21:39:04 - PowerShell Script Path: C:\Users\pc\FlexMigration\Server.ps1
+14/03/2025 21:39:04 - Executing: powershell -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "C:\Users\pc\FlexMigration\Server.ps1"
+14/03/2025 21:39:05 - Opening: chrome.exe http://localhost:8080/index.html
+14/03/2025 21:42:08 - PowerShell processes terminated.
+14/03/2025 21:42:08 - Script Path: C:\Users\pc\FlexMigration
+14/03/2025 21:42:08 - PowerShell Script Path: C:\Users\pc\FlexMigration\Server.ps1
+14/03/2025 21:42:08 - Executing: powershell -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "C:\Users\pc\FlexMigration\Server.ps1"
+14/03/2025 21:42:09 - Opening: chrome.exe http://localhost:8080/index.html
+14/03/2025 21:45:57 - PowerShell processes terminated.
+14/03/2025 21:45:57 - Script Path: C:\Users\pc\FlexMigration
+14/03/2025 21:45:57 - PowerShell Script Path: C:\Users\pc\FlexMigration\Server.ps1
+14/03/2025 21:45:57 - Executing: powershell -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "C:\Users\pc\FlexMigration\Server.ps1"
+14/03/2025 21:45:59 - Opening: chrome.exe http://localhost:8080/index.html
+14/03/2025 21:49:41 - PowerShell processes terminated.
+14/03/2025 21:49:41 - Script Path: C:\Users\pc\FlexMigration
+14/03/2025 21:49:41 - PowerShell Script Path: C:\Users\pc\FlexMigration\Server.ps1
+14/03/2025 21:49:42 - Executing: powershell -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "C:\Users\pc\FlexMigration\Server.ps1"
+14/03/2025 21:49:43 - Opening: chrome.exe http://localhost:8080/index.html

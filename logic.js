@@ -1,18 +1,12 @@
 // logic.js
 
-import InputFrame from "./InputFrame.js";
-import OutputFrame from "./OutputFrame.js";
-import Mapping from "./Mapping.js";
-import Vlookup from "./Vlookup.js";
+// Import the initialized instances
+import { inputFrame, outputFrame, mapping, activeVlookups } from "./instances.js";
 
 // Import shared functions from utils.js
 import { renderTable, createNotification } from "./utils.js";
 
-// Initialize the InputFrame and OutputFrame instances
-const inputFrame = new InputFrame();
-const outputFrame = new OutputFrame();
-const mapping = new Mapping();
-let activeVlookups = {};
+
 
 console.log("InputFrame and OutputFrame loaded successfully!");
 
@@ -133,7 +127,6 @@ document.getElementById('fileInput')?.addEventListener('change', async (event) =
 
         // Render the table using the parsed data
         renderTable(inputFrame.getData(), inputFrame.headers, 'excelTable');
-        renderMappingTable();
     } catch (error) {
         console.error("Error processing file:", error);
         createNotification("Error loading file. Please try again.");
