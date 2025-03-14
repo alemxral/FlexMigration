@@ -15,6 +15,7 @@ let isMappingInitialized = false;
 
 
 // Function to fetch InputFrame.json from the server and render the table
+// Function to fetch InputFrame.json from the server and render the table
 async function loadAndRenderTableFromServer() {
     try {
         // Fetch the JSON file from the server
@@ -30,8 +31,19 @@ async function loadAndRenderTableFromServer() {
         const headers = jsonData.headers || [];
         const data = jsonData.data || [];
 
+        // Update the InputFrame instance with the fetched data
+        inputFrame.headers = headers;
+        inputFrame.data = data;
+
+        // Optionally, update the OutputFrame instance as well (if needed)
+        outputFrame.headers = headers; // Assuming the same headers for simplicity
+        outputFrame.data = data;
+
         // Render the table using the parsed data
         renderTable(data, headers, 'excelTable');
+
+        // Render the mapping table
+        renderMappingTable();
 
         console.log("Table rendered successfully with data from InputFrame.json");
     } catch (error) {
