@@ -1,6 +1,3 @@
-// logic.js
-
-// Import the initialized instances
 // Import the initialized instances
 import { 
     inputFrame, 
@@ -8,20 +5,33 @@ import {
     mapping, 
     activeVlookups, 
     Vlookup as VlookupClass, // Rename the Vlookup class to avoid conflicts
-    vlookupManager// Use the renamed instance from instances.js
+    vlookupManager // Use the renamed instance from instances.js
 } from "./instances.js";
+
 // Import shared functions from utils.js
 import { renderTable, createNotification } from "./utils.js";
-
-
 
 console.log("InputFrame and OutputFrame loaded successfully!");
 
 // Track whether the mapping table has been initialized
 let isMappingInitialized = false;
-
 let isInputTableLoaded = false;
 let isOutputTableLoaded = false;
+
+// Preloader Functions
+function showPreloader() {
+    const preloader = document.getElementById('preloader');
+    if (preloader) {
+        preloader.style.display = 'block';
+    }
+}
+
+function hidePreloader() {
+    const preloader = document.getElementById('preloader');
+    if (preloader) {
+        preloader.style.display = 'none';
+    }
+}
 
 // Function to check if both tables are loaded and render the mapping table
 function checkAndRenderMappingTable() {
@@ -32,56 +42,52 @@ function checkAndRenderMappingTable() {
 
 // Update the load functions to set flags and trigger mapping table rendering
 async function loadAndRenderInputTable() {
+    showPreloader(); // Show preloader
     try {
         const response = await fetch("/api/load-inputframe");
         if (!response.ok) {
             throw new Error(`Failed to load InputFrame.json: ${response.status}`);
         }
         const inputData = await response.json();
-
         inputFrame.headers = inputData.headers || [];
         inputFrame.data = inputData.data || [];
-
         renderTable(inputFrame.data, inputFrame.headers, 'excelTable');
-
         isInputTableLoaded = true;
         checkAndRenderMappingTable();
-
         console.log("Input table rendered successfully with data from InputFrame.json");
     } catch (error) {
         console.error("Error loading InputFrame.json:", error.message);
         createNotification("No InputFrame found. Please upload one.");
+    } finally {
+        hidePreloader(); // Hide preloader
     }
 }
 
 async function loadAndRenderOutputTable() {
+    showPreloader(); // Show preloader
     try {
         const response = await fetch("/api/load-outputframe");
         if (!response.ok) {
             throw new Error(`Failed to load OutputFrame.json: ${response.status}`);
         }
         const outputData = await response.json();
-
         outputFrame.headers = outputData.headers || [];
         outputFrame.data = outputData.data || [];
-
         renderTable(outputFrame.data, outputFrame.headers, 'outputExcelTable');
-
         isOutputTableLoaded = true;
         checkAndRenderMappingTable();
-
         console.log("Output table rendered successfully with data from OutputFrame.json");
     } catch (error) {
         console.error("Error loading OutputFrame.json:", error.message);
         createNotification("No OutputFrame found. Please upload one.");
+    } finally {
+        hidePreloader(); // Hide preloader
     }
 }
-
 
 document.addEventListener('DOMContentLoaded', async () => {
     // Load and render the input table
     loadAndRenderInputTable();
-
     // Load and render the output table
     loadAndRenderOutputTable();
 });
@@ -164,9 +170,9 @@ function createEmptyOption(text) {
 
 // Save Button - Save mappings
 document.getElementById('saveMapping')?.addEventListener('click', () => {
+    showPreloader(); // Show preloader
     const rows = document.querySelectorAll('#mappingTableBody tr');
     mapping.clearMappings(); // Clear existing mappings
-
     rows.forEach((row) => {
         const inputHeader = row.querySelector('td:nth-child(1) select').value;
         const outputHeader = row.querySelector('td:nth-child(2) select').value;
@@ -174,19 +180,17 @@ document.getElementById('saveMapping')?.addEventListener('click', () => {
             mapping.addMapping(inputHeader, outputHeader);
         }
     });
-
     console.log("Mappings saved:", mapping.getMappings());
     createNotification("Mapping saved successfully!");
+    hidePreloader(); // Hide preloader
 });
-
-
-
 
 // Handle file upload and display in the table for the Input section
 document.getElementById('fileInput')?.addEventListener('change', async (event) => {
     const file = event.target.files[0];
     if (!file) return;
 
+    showPreloader(); // Show preloader
     try {
         // Load the file into the InputFrame instance
         await inputFrame.loadFromFile(file);
@@ -194,7 +198,7 @@ document.getElementById('fileInput')?.addEventListener('change', async (event) =
         // Show file details
         const fileInfo = document.getElementById('fileInfo');
         if (fileInfo) {
-            fileInfo.innerHTML = `📄 <strong>File:</strong> ${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
+            fileInfo.innerHTML = `📁 <strong>File:</strong> ${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
         }
 
         // Display headers
@@ -202,20 +206,20 @@ document.getElementById('fileInput')?.addEventListener('change', async (event) =
 
         // Render the table using the parsed data
         renderTable(inputFrame.getData(), inputFrame.headers, 'excelTable');
-  
     } catch (error) {
         console.error("Error processing file:", error);
         createNotification("Error loading file. Please try again.");
+    } finally {
+        hidePreloader(); // Hide preloader
     }
 });
-
-
 
 // Handle file upload for the Output section
 document.getElementById('outputFileInput')?.addEventListener('change', async (event) => {
     const file = event.target.files[0];
     if (!file) return;
 
+    showPreloader(); // Show preloader
     try {
         // Load the file into the OutputFrame instance
         await outputFrame.loadFromFile(file);
@@ -223,7 +227,7 @@ document.getElementById('outputFileInput')?.addEventListener('change', async (ev
         // Show file details
         const fileInfo = document.getElementById('outputFileInfo');
         if (fileInfo) {
-            fileInfo.innerHTML = `📄 <strong>File:</strong> ${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
+            fileInfo.innerHTML = `📁 <strong>File:</strong> ${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
         }
 
         // Display headers
@@ -234,6 +238,8 @@ document.getElementById('outputFileInput')?.addEventListener('change', async (ev
     } catch (error) {
         console.error("Error processing file:", error);
         createNotification("Error loading file. Please try again.");
+    } finally {
+        hidePreloader(); // Hide preloader
     }
 });
 
@@ -279,6 +285,7 @@ function populateVlookupDropdown() {
 }
 
 async function saveVlookupsToServer() {
+    showPreloader(); // Show preloader
     try {
         // Retrieve all VLOOKUPs from the VlookupManager
         const vlookups = vlookupManager.getAllVlookups();
@@ -301,19 +308,18 @@ async function saveVlookupsToServer() {
             },
             body: JSON.stringify(updatedData),
         });
-
         if (!saveResponse.ok) {
             throw new Error(`Failed to save VLOOKUP data: ${saveResponse.status}`);
         }
-
         console.log("VLOOKUP data saved successfully.");
         createNotification("VLOOKUP data saved successfully.");
     } catch (error) {
         console.error("Error saving VLOOKUP data:", error);
         createNotification("Error saving VLOOKUP data. Please try again.");
+    } finally {
+        hidePreloader(); // Hide preloader
     }
 }
-
 
 // Temporary storage for uploaded Excel data
 let tempUploadedData = null;
@@ -321,7 +327,6 @@ let tempUploadedData = null;
 document.getElementById('addVlookupButtonImport')?.addEventListener('click', async () => {
     const dropdown = document.getElementById('vlookupHeaderDropdown');
     const selectedHeader = dropdown.value;
-
     if (!selectedHeader) {
         createNotification("Please select an OutputFrame header.");
         return;
@@ -336,6 +341,7 @@ document.getElementById('addVlookupButtonImport')?.addEventListener('click', asy
         const file = event.target.files[0];
         if (!file) return;
 
+        showPreloader(); // Show preloader
         try {
             // Display the uploaded file name
             const uploadedFileNameElement = document.getElementById('uploadedFileName');
@@ -345,7 +351,6 @@ document.getElementById('addVlookupButtonImport')?.addEventListener('click', asy
 
             // Parse the uploaded Excel file
             const reader = new FileReader();
-
             reader.onload = async (e) => {
                 try {
                     const data = new Uint8Array(e.target.result);
@@ -368,23 +373,22 @@ document.getElementById('addVlookupButtonImport')?.addEventListener('click', asy
 
                     // Store the parsed data temporarily
                     tempUploadedData = { headers, rows };
-
                     createNotification(`Excel file imported successfully.`);
                 } catch (error) {
                     console.error("Error processing Excel file:", error);
                     createNotification("Error importing Excel file. Please try again.");
                 }
             };
-
             reader.onerror = () => {
                 console.error("Error reading file.");
                 createNotification("Error reading file.");
             };
-
             reader.readAsArrayBuffer(file);
         } catch (error) {
             console.error("Error uploading file:", error);
             createNotification("Error uploading file. Please try again.");
+        } finally {
+            hidePreloader(); // Hide preloader
         }
     });
 
@@ -394,7 +398,6 @@ document.getElementById('addVlookupButtonImport')?.addEventListener('click', asy
 document.getElementById('addVlookupButton')?.addEventListener('click', async () => {
     const dropdown = document.getElementById('vlookupHeaderDropdown');
     const selectedHeader = dropdown.value;
-
     if (!selectedHeader) {
         createNotification("Please select an OutputFrame header.");
         return;
@@ -406,6 +409,7 @@ document.getElementById('addVlookupButton')?.addEventListener('click', async () 
         return;
     }
 
+    showPreloader(); // Show preloader
     try {
         // Save the temporary data to the VlookupManager
         vlookupManager.addVlookup(selectedHeader, tempUploadedData);
@@ -423,13 +427,19 @@ document.getElementById('addVlookupButton')?.addEventListener('click', async () 
     } catch (error) {
         console.error("Error adding Vlookup:", error);
         createNotification("Error adding Vlookup. Please try again.");
+    } finally {
+        hidePreloader(); // Hide preloader
     }
 });
+
+
 
 
 async function updateActiveVlookupsList() {
     const list = document.getElementById('activeVlookupsList');
     if (!list) return;
+
+    showPreloader(); // Show preloader
 
     try {
         // Fetch the latest VLOOKUP data from the server
@@ -450,13 +460,16 @@ async function updateActiveVlookupsList() {
     } catch (error) {
         console.error("Error updating active VLOOKUPs list:", error);
         createNotification("Error loading active VLOOKUPs. Please try again.");
+    } finally {
+        hidePreloader(); // Hide preloader after operation completes
     }
 }
-
 
 function displayVlookupContent(header) {
     const tableBody = document.getElementById('vlookupContentBody');
     if (!tableBody) return;
+
+    showPreloader(); // Show preloader
 
     try {
         // Fetch the latest VLOOKUP data from the server
@@ -500,10 +513,38 @@ function displayVlookupContent(header) {
 
             console.log("Rows (parsed):", parsedRows); // Debugging: Log parsed rows
 
+            // Filter out rows where all values are empty
+            const nonEmptyRows = parsedRows.filter(row => {
+                return Object.values(row).some(value => value && value.trim() !== '');
+            });
+
+            // Filter out columns (headers) where all corresponding row values are empty
+            const nonEmptyHeaders = headers.filter(header => {
+                return nonEmptyRows.some(row => row[header] && row[header].trim() !== '');
+            });
+
+            console.log("Non-empty headers:", nonEmptyHeaders); // Debugging: Log non-empty headers
+            console.log("Non-empty rows:", nonEmptyRows); // Debugging: Log non-empty rows
+
+            // Render the filtered data in the table
+            if (nonEmptyHeaders.length === 0 || nonEmptyRows.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="100" style="text-align: center;">No data available</td></tr>';
+                return;
+            }
+
+            // Create table header
+            const headerRow = document.createElement('tr');
+            nonEmptyHeaders.forEach(headerText => {
+                const th = document.createElement('th');
+                th.textContent = headerText;
+                headerRow.appendChild(th);
+            });
+            tableBody.appendChild(headerRow);
+
             // Render parsed rows in the table
-            parsedRows.forEach((row) => {
+            nonEmptyRows.forEach((row) => {
                 const tr = document.createElement('tr');
-                headers.forEach((headerText) => {
+                nonEmptyHeaders.forEach((headerText) => {
                     const td = document.createElement('td');
                     td.textContent = row[headerText] || ''; // Handle undefined values
                     tr.appendChild(td);
@@ -519,6 +560,8 @@ function displayVlookupContent(header) {
     } catch (error) {
         console.error("Error displaying VLOOKUP content:", error);
         createNotification("Error loading VLOOKUP content. Please try again.");
+    } finally {
+        hidePreloader(); // Hide preloader after operation completes
     }
 }
 
@@ -533,6 +576,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 // Check if the clicked section is "vlookup"
                 if (sectionId === 'vlookup' && !isVlookupInitialized) {
+                    showPreloader(); // Show preloader
+
                     // Load example file into OutputFrame (replace with actual file loading logic)
                     await loadVlookupsFromServer();
 
@@ -545,19 +590,23 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 // Always update the active Vlookups list when the Vlookup section is activated
                 if (sectionId === 'vlookup') {
-                    updateActiveVlookupsList();
+                    await updateActiveVlookupsList();
                 }
             });
         });
     } catch (error) {
         console.error("Error initializing Vlookup section:", error);
         createNotification("Error loading headers for Vlookup.");
+    } finally {
+        hidePreloader(); // Hide preloader after initialization
     }
 });
 
 // Function to load VLOOKUPs from the server
 async function loadVlookupsFromServer() {
     try {
+        showPreloader(); // Show preloader
+
         const response = await fetch('/api/load-data-VlookupManager');
         if (!response.ok) {
             throw new Error(`Failed to load VLOOKUP data: ${response.status}`);
@@ -573,14 +622,16 @@ async function loadVlookupsFromServer() {
     } catch (error) {
         console.error("Error loading VLOOKUPs from server:", error);
         createNotification("Error loading VLOOKUPs. Please try again.");
+    } finally {
+        hidePreloader(); // Hide preloader after operation completes
     }
 }
-
-
 
 // Function to load OutputFrame headers
 async function loadOutputFrameHeaders() {
     try {
+        showPreloader(); // Show preloader
+
         // Option 1: Load from a file upload (if available)
         const fileInput = document.getElementById('outputFileInput');
         if (fileInput && fileInput.files.length > 0) {
@@ -600,6 +651,9 @@ async function loadOutputFrameHeaders() {
         console.log("OutputFrame headers loaded successfully.");
     } catch (error) {
         console.error("Error loading OutputFrame headers:", error);
-        throw error;
+        createNotification("Error loading OutputFrame headers.");
+    } finally {
+        hidePreloader(); // Hide preloader after operation completes
     }
 }
+

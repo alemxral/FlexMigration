@@ -300,6 +300,7 @@ th {
     animation: spin 1s linear infinite;
     display: none;
     margin-left: 10px;
+    
 }
 
 @keyframes spin {
@@ -526,4 +527,124 @@ th {
     width: 100%; /* Full-width table */
     border-collapse: collapse; /* Remove gaps between cells */
     margin-top: 20px; /* Add spacing above the table */
+}
+
+.vlookup-content {
+    margin-top: 20px;
+}
+
+.vlookup-content h3 {
+    margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.table-container {
+    max-height: 400px; /* Set a maximum height for the table */
+    overflow-y: auto; /* Enable vertical scrolling */
+    overflow-x: auto; /* Enable vertical scrolling */
+    border: 1px solid #ddd; /* Add a border around the table */
+    border-radius: 5px; /* Rounded corners */
+}
+
+#vlookupContentTable {
+    width: 100%; /* Make the table responsive */
+    border-collapse: collapse; /* Remove gaps between cells */
+}
+
+#vlookupContentTable th,
+#vlookupContentTable td {
+    padding: 8px 12px; /* Add padding for better readability */
+    text-align: left; /* Align text to the left */
+    border: 1px solid #ddd; /* Add borders to cells */
+    white-space: nowrap; /* Prevent text from wrapping */
+}
+
+#vlookupContentTable th {
+    background-color: #acacac; /* Light gray background for headers */
+    font-weight: bold;
+}
+
+#vlookupContentTable tr:nth-child(even) {
+    background-color: var(--gray-medium); /* Alternate row colors for better visibility */
+}
+
+#vlookupContentTable tr:hover {
+    background-color: var(--gray-light); /* Highlight rows on hover */
+}
+
+/* Preloader Container */
+.preloader-container {
+    display: none; /* Hidden by default */
+    position: fixed; /* Fixed positioning to cover the entire viewport */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+    z-index: 9999; /* Ensure it's above everything */
+    justify-content: center;
+    align-items: center;
+}
+
+/* Loader Animation */
+.load {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100px;
+    height: 100px;
+}
+
+.load hr {
+    border: 0;
+    margin: 0;
+    width: 40%;
+    height: 40%;
+    position: absolute;
+    border-radius: 50%;
+    animation: spin 2s ease infinite;
+}
+
+.load :first-child {
+    background: var(--accent-color);
+    animation-delay: -1.5s;
+}
+
+.load :nth-child(2) {
+    background: var(--accent-color);
+    animation-delay: -1s;
+}
+
+.load :nth-child(3) {
+    background: var(--accent-color);
+    animation-delay: -0.5s;
+}
+
+.load :last-child {
+    background: var(--accent-color);
+}
+
+@keyframes spin {
+    0%, 100% {
+        transform: translate(0);
+    }
+    25% {
+        transform: translate(160%);
+    }
+    50% {
+        transform: translate(160%, 160%);
+    }
+    75% {
+        transform: translate(0, 160%);
+    }
+}
+
+/* Blur Effect on .main */
+.main-blur {
+    filter: blur(5px); /* Apply blur effect */
+    pointer-events: none; /* Disable interactions while blurred */
+    opacity: 0.5; /* Reduce opacity for a darker look */
+    transition: all 0.3s ease; /* Smooth transition for the blur effect */
 }

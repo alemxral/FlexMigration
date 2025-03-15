@@ -98,3 +98,4 @@ export function createNotification(message) {
         notification.remove();
     }, 3000);
 }
+
