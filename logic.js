@@ -10,6 +10,7 @@ import {
 
 // Import shared functions from utils.js
 import { renderTable, createNotification } from "./utils.js";
+import { refreshAndActivateTab } from "./script.js";
 
 console.log("InputFrame and OutputFrame loaded successfully!");
 
@@ -39,6 +40,27 @@ function checkAndRenderMappingTable() {
         renderMappingTable();
     }
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Retrieve the active tab identifier from sessionStorage
+    const activeTabId = sessionStorage.getItem('activeTab');
+
+    if (activeTabId) {
+        // Find the corresponding nav item and activate it
+        const navItem = document.querySelector(`[data-section="${activeTabId}"]`);
+        if (navItem) {
+            // Add an "active" class to the nav item (or trigger its click event)
+            navItem.classList.add('active'); // Adjust this based on your styling
+            navItem.click(); // Trigger the click event if needed
+
+            // Optionally scroll to the active tab for better UX
+            navItem.scrollIntoView({ behavior: 'smooth' });
+
+            // Clear the stored tab identifier after activation
+            sessionStorage.removeItem('activeTab');
+        }
+    }
+});
 
 // Update the load functions to set flags and trigger mapping table rendering
 async function loadAndRenderInputTable() {
@@ -417,16 +439,20 @@ document.getElementById('addVlookupButton')?.addEventListener('click', async () 
         // Clear the temporary data
         tempUploadedData = null;
 
-        // Update the active Vlookups list
-        updateActiveVlookupsList();
+       
 
         // Optionally save the VLOOKUPs to the server
         await saveVlookupsToServer();
-
+        updateActiveVlookupsList();
         createNotification(`Vlookup added for header: ${selectedHeader}`);
+        
+    
     } catch (error) {
         console.error("Error adding Vlookup:", error);
+        updateActiveVlookupsList();
         createNotification("Error adding Vlookup. Please try again.");
+       
+        
     } finally {
         hidePreloader(); // Hide preloader
     }
@@ -479,6 +505,7 @@ async function updateActiveVlookupsList() {
             // Append the list item to the list
             list.appendChild(listItem);
         });
+        
     } catch (error) {
         console.error("Error updating active VLOOKUPs list:", error);
         createNotification("Error loading active VLOOKUPs. Please try again.");
@@ -491,18 +518,30 @@ async function deleteVlookup(header) {
     try {
         showPreloader(); // Show preloader
 
+        console.log("Sending DELETE request to /api/delete-vlookup with key:", header);
+
+        // Construct the request body
+        const requestBody = JSON.stringify({ key: header });
+
+        console.log("Request Body:", requestBody); // Debugging: Log the request body
+
         // Send a DELETE request with the key in the request body
         const response = await fetch('/api/delete-vlookup', {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ key: header }), // Include the key in the request body
+            body: requestBody, // Include the key in the request body
         });
 
+        console.log("Response Status:", response.status); // Debugging: Log the response status
+
+        // Parse the response as JSON
+        const responseData = await response.json();
+        console.log("Response Data:", responseData); // Debugging: Log the full response
+
         if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || "Failed to delete VLOOKUP.");
+            throw new Error(responseData.message || "Failed to delete VLOOKUP.");
         }
 
         // Remove the VLOOKUP locally
@@ -513,9 +552,14 @@ async function deleteVlookup(header) {
 
         console.log(`VLOOKUP for header "${header}" deleted successfully.`);
         createNotification(`VLOOKUP for header "${header}" deleted successfully.`);
+            // Refresh the page after a short delay
+            updateActiveVlookupsList();
+       
     } catch (error) {
         console.error("Error deleting VLOOKUP:", error);
-        createNotification("Error deleting VLOOKUP. Please try again.");
+        // createNotification("Error deleting VLOOKUP. Please try again.");
+        updateActiveVlookupsList();
+       
     } finally {
         hidePreloader(); // Hide preloader
     }

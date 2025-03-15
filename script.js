@@ -37,6 +37,51 @@ function activateSection(sectionId) {
     }
 }
 
+export function refreshAndActivateTab(sectionId) {
+    // Store the tab identifier in sessionStorage
+    sessionStorage.setItem('activeSection', sectionId);
+
+    // Reload the page
+    window.location.reload();
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    // Retrieve the active section identifier from sessionStorage
+    const activeSectionId = sessionStorage.getItem('activeSection');
+
+    if (activeSectionId) {
+        // Activate the stored section
+        activateSection(activeSectionId);
+
+        // Clear the stored section identifier after activation
+        sessionStorage.removeItem('activeSection');
+    } else {
+        // Default to activating the 'input' section
+        activateSection('input');
+    }
+
+    // Special handling for the 'vlookup' section
+    if (activeSectionId === 'vlookup') {
+        try {
+            // Ensure the VLOOKUP section is initialized
+            if (!isVlookupInitialized) {
+                await loadVlookupsFromServer(); // Load VLOOKUPs from the server
+                populateVlookupDropdown(); // Populate the dropdown with OutputFrame headers
+                isVlookupInitialized = true; // Mark the VLOOKUP section as initialized
+            }
+
+            // Update the active VLOOKUPs list
+            updateActiveVlookupsList();
+        } catch (error) {
+            console.error("Error initializing VLOOKUP section:", error);
+            createNotification("Error loading headers for VLOOKUP.");
+        }
+    }
+});
+
+
+
+
 // Add click event listeners to navigation items
 navItems.forEach(navItem => {
     navItem.addEventListener('click', () => {
@@ -45,10 +90,6 @@ navItems.forEach(navItem => {
     });
 });
 
-// Initialize with the first section as active
-document.addEventListener('DOMContentLoaded', () => {
-    activateSection('input'); // Default active section
-});
 
 document.getElementById('fileSave')?.addEventListener('click', async () => {
     console.log("Current state of InputFrame:", {

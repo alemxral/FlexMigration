@@ -86,33 +86,48 @@ while ($true) {
         [System.Text.Encoding]::UTF8.GetBytes("{'status': 'success'}") | ForEach-Object { $response.OutputStream.Write($_, 0, $_.Length) }
     }
 
-        # API: Delete VLOOKUP Data by Key
     # API: Delete VLOOKUP Data by Key (Key in Request Body)
     elseif ($request.HttpMethod -eq "DELETE" -and $path -eq "api/delete-vlookup") {
         try {
-            # Read the incoming JSON data from the request body
+            # Read the raw incoming request body
             $reader = New-Object System.IO.StreamReader($request.InputStream)
             $jsonData = $reader.ReadToEnd()
             $reader.Close()
 
-            # Parse the JSON payload
-            $payload = ConvertFrom-Json $jsonData
+            # Log the raw request body to a file for debugging
+            Add-Content -Path "$dataDir\error.txt" -Value "Raw Request Body: $jsonData"
+
+            # Attempt to parse the JSON payload
+            try {
+                $payload = ConvertFrom-Json $jsonData
+            } catch {
+                $errorMessage = "Failed to parse JSON payload: $_"
+                Write-Host $errorMessage
+                Add-Content -Path "$dataDir\error.txt" -Value $errorMessage
+                throw $errorMessage
+            }
 
             # Extract the key from the payload
             $key = $payload.key
 
             if (-not $key) {
-                throw "Key not provided in the request body."
+                $errorMessage = "Key not provided in the request body."
+                Write-Host $errorMessage
+                Add-Content -Path "$dataDir\error.txt" -Value $errorMessage
+                throw $errorMessage
             }
 
             Write-Host "Deleting VLOOKUP with key: $key"
 
             # Path to the VLOOKUP JSON file
-            $filePath = "$dataDir\Vlookups.json"
+            $filePath = "$dataDir\VlookupManager.json"
 
             # Check if the file exists
             if (-not (Test-Path $filePath)) {
-                throw "VLOOKUP data file not found."
+                $errorMessage = "VLOOKUP data file not found."
+                Write-Host $errorMessage
+                Add-Content -Path "$dataDir\error.txt" -Value $errorMessage
+                throw $errorMessage
             }
 
             # Load the existing VLOOKUP data
@@ -139,9 +154,12 @@ while ($true) {
                 [System.Text.Encoding]::UTF8.GetBytes("{'status': 'error', 'message': 'VLOOKUP with key `$key` not found.'}") | ForEach-Object { $response.OutputStream.Write($_, 0, $_.Length) }
             }
         } catch {
-            # Handle errors
+            # Log the full error details to error.txt
             $errorMessage = $_.Exception.Message
             Write-Host "Error deleting VLOOKUP: $errorMessage"
+            Add-Content -Path "$dataDir\error.txt" -Value "Error deleting VLOOKUP: $errorMessage"
+
+            # Respond with a 500 Internal Server Error
             $response.StatusCode = 500
             [System.Text.Encoding]::UTF8.GetBytes("{'status': 'error', 'message': '$errorMessage'}") | ForEach-Object { $response.OutputStream.Write($_, 0, $_.Length) }
         }
