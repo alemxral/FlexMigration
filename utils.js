@@ -128,8 +128,9 @@ export function createSearchableDropdown(options) {
         const searchTerm = input.value.toLowerCase();
         ul.style.display = 'block';
         ul.innerHTML = '';
+
         options
-            .filter((option) => option.toLowerCase().includes(searchTerm))
+            .filter((option) => typeof option === 'string' && option.toLowerCase().includes(searchTerm))
             .forEach((option) => {
                 const li = document.createElement('li');
                 li.textContent = option;
