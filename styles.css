@@ -588,13 +588,17 @@ th {
 }
 
 /* Loader Animation */
+/* Loader Animation */
 .load {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    position: fixed; /* Fixed positioning to stay in place */
+    top: 50%; /* Center vertically */
+    left: 50%; /* Center horizontally */
+    transform: translate(-50%, -50%); /* Adjust for exact centering */
     width: 100px;
     height: 100px;
+    z-index: 9999; /* Ensure it appears above all other elements */
+   
+    border-radius: 10px; /* Optional: Add rounded corners for aesthetics */
 }
 
 .load hr {
