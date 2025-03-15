@@ -293,7 +293,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const downloadContainer = document.getElementById('downloadContainer');
     const downloadButton = document.getElementById('downloadButton');
 
-    // Define sections to check
+    const checkConditionsButton = document.getElementById('checkConditionsButton');
+    const conditionsProgressContainer = document.getElementById('conditionsProgressContainer');
+    const conditionsProgressFill = document.getElementById('conditionsProgressFill');
+    const conditionsProgressStatus = document.getElementById('conditionsProgressStatus');
+    const conditionsChecklistBox = document.getElementById('conditionsChecklistBox');
+    const conditionsChecklist = document.getElementById('conditionsChecklist');
+
+    // Define sections to check for Generate Output
     const sections = [
         { name: "Input", status: "pending" },
         { name: "Mapping", status: "pending" },
@@ -301,7 +308,15 @@ document.addEventListener('DOMContentLoaded', () => {
         { name: "FlexRules", status: "pending" }
     ];
 
-    // Steps for the progress bar
+    // Define conditions to check for Check Conditions
+    const conditions = [
+        { name: "Data Consistency", status: "pending" },
+        { name: "Rule Validity", status: "pending" },
+        { name: "File Format", status: "pending" },
+        { name: "Output Compatibility", status: "pending" }
+    ];
+
+    // Steps for the Generate Output progress bar
     const steps = [
         { status: 'Checking data consistency...', progress: 20, sectionIndex: 0 },
         { status: 'Validating mappings...', progress: 40, sectionIndex: 1 },
@@ -310,19 +325,28 @@ document.addEventListener('DOMContentLoaded', () => {
         { status: 'Finalizing export...', progress: 100 }
     ];
 
+    // Steps for the Check Conditions progress bar
+    const conditionsSteps = [
+        { status: 'Validating initial conditions...', progress: 25, conditionIndex: 0 },
+        { status: 'Checking rule validity...', progress: 50, conditionIndex: 1 },
+        { status: 'Verifying file format...', progress: 75, conditionIndex: 2 },
+        { status: 'Ensuring output compatibility...', progress: 100, conditionIndex: 3 }
+    ];
+
     let currentStep = 0;
+    let currentConditionStep = 0;
 
     // Function to populate the checklist
-    function populateChecklist() {
-        sectionChecklist.innerHTML = '';
-        sections.forEach((section, index) => {
+    function populateChecklist(listElement, items) {
+        listElement.innerHTML = '';
+        items.forEach((item, index) => {
             const listItem = document.createElement('li');
-            listItem.className = `status-${section.status}`;
+            listItem.className = `status-${item.status}`;
             listItem.innerHTML = `
                 <span class="status-icon"></span>
-                ${section.name} Section
+                ${item.name}
             `;
-            sectionChecklist.appendChild(listItem);
+            listElement.appendChild(listItem);
         });
     }
 
@@ -334,13 +358,13 @@ document.addEventListener('DOMContentLoaded', () => {
         checklistBox.classList.remove('hidden');
 
         // Populate the checklist
-        populateChecklist();
+        populateChecklist(sectionChecklist, sections);
 
         // Start the progress simulation
         simulateProgress();
     });
 
-    // Simulate Progress Function
+    // Simulate Progress Function for Generate Output
     function simulateProgress() {
         if (currentStep < steps.length) {
             const step = steps[currentStep];
@@ -350,7 +374,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Update section status
             if (step.sectionIndex !== undefined) {
                 sections[step.sectionIndex].status = "completed";
-                populateChecklist(); // Refresh the checklist
+                populateChecklist(sectionChecklist, sections); // Refresh the checklist
             }
 
             currentStep++;
@@ -359,6 +383,41 @@ document.addEventListener('DOMContentLoaded', () => {
             // Process complete, show the download container
             progressContainer.classList.add('hidden');
             downloadContainer.classList.remove('hidden');
+        }
+    }
+
+    // Check Conditions Button Click Event
+    checkConditionsButton.addEventListener('click', () => {
+        // Hide the check conditions button and show the progress container
+        checkConditionsButton.classList.add('hidden');
+        conditionsProgressContainer.classList.remove('hidden');
+        conditionsChecklistBox.classList.remove('hidden');
+
+        // Populate the checklist
+        populateChecklist(conditionsChecklist, conditions);
+
+        // Start the progress simulation
+        simulateConditionsProgress();
+    });
+
+    // Simulate Progress Function for Check Conditions
+    function simulateConditionsProgress() {
+        if (currentConditionStep < conditionsSteps.length) {
+            const step = conditionsSteps[currentConditionStep];
+            conditionsProgressStatus.textContent = step.status;
+            conditionsProgressFill.style.width = `${step.progress}%`;
+
+            // Update condition status
+            if (step.conditionIndex !== undefined) {
+                conditions[step.conditionIndex].status = "completed";
+                populateChecklist(conditionsChecklist, conditions); // Refresh the checklist
+            }
+
+            currentConditionStep++;
+            setTimeout(simulateConditionsProgress, 1500); // Delay between steps
+        } else {
+            // Process complete
+            alert("All conditions have been successfully validated.");
         }
     }
 

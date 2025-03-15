@@ -147,6 +147,28 @@
                     <p class="success-message">Processing complete! Your file is ready to download.</p>
                     <button id="downloadButton" class="download-button">Download Excel File</button>
                 </div>
+            
+                <!-- Check Conditions Section -->
+                <hr class="section-divider">
+            
+                <button id="checkConditionsButton" class="generate-button">Check Conditions</button>
+            
+                <!-- Conditions Progress Bar Container -->
+                <div id="conditionsProgressContainer" class="progress-container hidden">
+                    <p class="progress-title">Checking Conditions...</p>
+                    <div class="progress-bar">
+                        <div id="conditionsProgressFill" class="progress-fill"></div>
+                    </div>
+                    <p id="conditionsProgressStatus" class="progress-status">Validating initial conditions...</p>
+                </div>
+            
+                <!-- Conditions Checklist Box -->
+                <div id="conditionsChecklistBox" class="checklist-container hidden">
+                    <h3>Condition Checks</h3>
+                    <ul id="conditionsChecklist" class="checklist-list">
+                        <!-- Dynamically populated checklist items -->
+                    </ul>
+                </div>
             </div>
             <div id="mapping-wrapper" class="section-wrapper">
                 <h2>Mapping Section</h2>

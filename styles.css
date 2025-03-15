@@ -1119,3 +1119,20 @@ select:focus {
 .checklist-list li.pending .status-icon {
     background-color: var(--warning-color); /* Yellow for pending */
 }
+
+/* Section Divider */
+.section-divider {
+    margin: 20px 0;
+    border: none;
+    border-top: 1px solid var(--border-color);
+}
+
+/* Conditions Progress Bar */
+#conditionsProgressContainer {
+    margin-top: 20px;
+}
+
+/* Conditions Checklist */
+#conditionsChecklistBox {
+    margin-top: 20px;
+}
