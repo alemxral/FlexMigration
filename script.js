@@ -105,9 +105,11 @@ document.getElementById('fileSave')?.addEventListener('click', async () => {
     try {
         await inputFrame.saveToServer("/api/save-data-InputFrame");
         createNotification("File saved to server successfully!");
+        refreshAndActivateTab("input");
     } catch (error) {
         console.error("Error saving to server:", error.message);
         // createNotification("Error saving file to server.");
+        refreshAndActivateTab("input");
     }
 });
 
@@ -151,9 +153,7 @@ document.getElementById('fileDiscard')?.addEventListener('click', function () {
     // Show notification
     createNotification("File discarded.");
     // Refresh the page after a short delay
-    setTimeout(() => {
-        window.location.reload(); // Reload the page
-    }, 1000); // Delay of 1 second before refreshing
+ 
 });
 
 // Save Button - Adds a loading spinner effect for Output section
@@ -171,10 +171,13 @@ document.getElementById('outputFileSave')?.addEventListener('click', async funct
         // Update the button text and show success notification
         outputFileSave.innerHTML = "Save";
         createNotification("File saved to server successfully!");
+        
+        refreshAndActivateTab("options");
     } catch (error) {
         // Handle errors and show an error notification
         console.error("Error saving file to server:", error.message);
         outputFileSave.innerHTML = "Save";
+        refreshAndActivateTab("options");
         // createNotification("Error saving file to server. Please try again.");
     }
 });

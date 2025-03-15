@@ -85,7 +85,7 @@ async function loadAndRenderInputTable() {
     }
 }
 
-async function loadAndRenderOutputTable() {
+export async function loadAndRenderOutputTable() {
     showPreloader(); // Show preloader
     try {
         const response = await fetch("/api/load-outputframe");
