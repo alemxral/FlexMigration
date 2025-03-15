@@ -99,3 +99,47 @@ export function createNotification(message) {
     }, 3000);
 }
 
+// Helper function to create a dropdown
+export function createDropdown(options) {
+    const select = document.createElement('select');
+    options.forEach((optionText) => {
+        const option = document.createElement('option');
+        option.value = optionText;
+        option.textContent = optionText;
+        select.appendChild(option);
+    });
+    return select;
+}
+
+// Helper function to create a searchable dropdown
+export function createSearchableDropdown(options) {
+    const container = document.createElement('div');
+    container.className = 'searchable-dropdown';
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.placeholder = 'Search...';
+    container.appendChild(input);
+
+    const ul = document.createElement('ul');
+    container.appendChild(ul);
+
+    input.addEventListener('input', () => {
+        const searchTerm = input.value.toLowerCase();
+        ul.style.display = 'block';
+        ul.innerHTML = '';
+        options
+            .filter((option) => option.toLowerCase().includes(searchTerm))
+            .forEach((option) => {
+                const li = document.createElement('li');
+                li.textContent = option;
+                li.addEventListener('click', () => {
+                    input.value = option;
+                    ul.style.display = 'none';
+                });
+                ul.appendChild(li);
+            });
+    });
+
+    return container;
+}

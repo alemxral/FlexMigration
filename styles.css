@@ -1136,3 +1136,109 @@ select:focus {
 #conditionsChecklistBox {
     margin-top: 20px;
 }
+
+/* General Section Styling */
+#defaultfields-wrapper {
+    padding: 20px;
+    background-color: var(--secondary-bg);
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+#defaultfields-wrapper h2 {
+    margin-bottom: 20px;
+    color: var(--accent-color);
+    font-size: 24px;
+}
+
+/* File Upload Container */
+.file-upload-container {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#excelFileUpload {
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--secondary-bg);
+    color: var(--text-color);
+}
+
+#saveToJsonButton {
+    padding: 8px 16px;
+    font-size: 14px;
+    background-color: var(--accent-color);
+    color: var(--primary-bg);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#saveToJsonButton:hover {
+    background-color: var(--hover-bg);
+}
+
+/* Table Styling */
+.default-fields-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.default-fields-table th,
+.default-fields-table td {
+    border: 1px solid var(--border-color);
+    padding: 8px;
+    text-align: left;
+    color: var(--text-color);
+}
+
+.default-fields-table th {
+    background-color: var(--gray-dark);
+    font-weight: bold;
+}
+
+/* Searchable Dropdown */
+.searchable-dropdown {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+.searchable-dropdown input {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--secondary-bg);
+    color: var(--text-color);
+}
+
+.searchable-dropdown ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    max-height: 150px;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--secondary-bg);
+    position: absolute;
+    width: 100%;
+    z-index: 1000;
+    display: none;
+}
+
+.searchable-dropdown ul li {
+    padding: 8px;
+    cursor: pointer;
+}
+
+.searchable-dropdown ul li:hover {
+    background-color: var(--hover-bg);
+}

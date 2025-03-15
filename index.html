@@ -74,6 +74,12 @@
                     </svg>
                     Vlookup
                 </li>
+                <li class="nav-item" data-section="defaultfields">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    Default Fields
+                </li>
                 <li class="nav-item" data-section="flexrules">
                     <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                         <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -119,6 +125,8 @@
              
             </div>
             
+
+
             <div id="output-wrapper" class="section-wrapper">
                 <h2>Output Section</h2>
             
@@ -230,6 +238,32 @@
                         <tbody id="vlookupContentBody"></tbody>
                     </table>
                 </div>
+            </div>
+            <div id="defaultfields-wrapper" class="section-wrapper">
+                <h2>Default Fields Section</h2>
+            
+                <!-- File Upload -->
+                <div class="file-upload-container">
+                    <label for="excelFileUpload">Upload Excel File:</label>
+                    <input type="file" id="excelFileUpload" accept=".xlsx, .xls" />
+                    <button id="saveToJsonButton" class="primary">Save to JSON</button>
+                    <button id="loadFromJsonButton" class="secondary">Load from JSON</button>
+                </div>
+            
+                <!-- Table -->
+                <table id="defaultFieldsTable" class="default-fields-table">
+                    <thead>
+                        <tr>
+                            <th>Header 1</th>
+                            <th>Values</th>
+                            <th>Filter Header</th>
+                            <th>Filter Values</th>
+                        </tr>
+                    </thead>
+                    <tbody id="defaultFieldsTableBody">
+                        <!-- Rows will be dynamically generated here -->
+                    </tbody>
+                </table>
             </div>
             <div id="flexrules-wrapper" class="section-wrapper">
                 <h2>FlexRules Section</h2>
