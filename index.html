@@ -121,7 +121,32 @@
             
             <div id="output-wrapper" class="section-wrapper">
                 <h2>Output Section</h2>
-                <p>This is the output section content.</p>
+            
+                <!-- Generate Button -->
+                <button id="generateButton" class="generate-button">Generate Output</button>
+            
+                <!-- Progress Bar Container -->
+                <div id="progressContainer" class="progress-container hidden">
+                    <p class="progress-title">Processing...</p>
+                    <div class="progress-bar">
+                        <div id="progressFill" class="progress-fill"></div>
+                    </div>
+                    <p id="progressStatus" class="progress-status">Checking data consistency...</p>
+                </div>
+            
+                <!-- Checklist Box -->
+                <div id="checklistBox" class="checklist-container hidden">
+                    <h3>Section Status</h3>
+                    <ul id="sectionChecklist" class="checklist-list">
+                        <!-- Dynamically populated checklist items -->
+                    </ul>
+                </div>
+            
+                <!-- Download Button -->
+                <div id="downloadContainer" class="download-container hidden">
+                    <p class="success-message">Processing complete! Your file is ready to download.</p>
+                    <button id="downloadButton" class="download-button">Download Excel File</button>
+                </div>
             </div>
             <div id="mapping-wrapper" class="section-wrapper">
                 <h2>Mapping Section</h2>

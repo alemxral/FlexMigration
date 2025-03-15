@@ -282,3 +282,89 @@ document.addEventListener('DOMContentLoaded', () => {
         createNotification(`Rule "${ruleName}" added successfully!`);
     });
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+    const generateButton = document.getElementById('generateButton');
+    const progressContainer = document.getElementById('progressContainer');
+    const progressFill = document.getElementById('progressFill');
+    const progressStatus = document.getElementById('progressStatus');
+    const checklistBox = document.getElementById('checklistBox');
+    const sectionChecklist = document.getElementById('sectionChecklist');
+    const downloadContainer = document.getElementById('downloadContainer');
+    const downloadButton = document.getElementById('downloadButton');
+
+    // Define sections to check
+    const sections = [
+        { name: "Input", status: "pending" },
+        { name: "Mapping", status: "pending" },
+        { name: "VLOOKUP", status: "pending" },
+        { name: "FlexRules", status: "pending" }
+    ];
+
+    // Steps for the progress bar
+    const steps = [
+        { status: 'Checking data consistency...', progress: 20, sectionIndex: 0 },
+        { status: 'Validating mappings...', progress: 40, sectionIndex: 1 },
+        { status: 'Processing VLOOKUPs...', progress: 70, sectionIndex: 2 },
+        { status: 'Applying FlexRules...', progress: 90, sectionIndex: 3 },
+        { status: 'Finalizing export...', progress: 100 }
+    ];
+
+    let currentStep = 0;
+
+    // Function to populate the checklist
+    function populateChecklist() {
+        sectionChecklist.innerHTML = '';
+        sections.forEach((section, index) => {
+            const listItem = document.createElement('li');
+            listItem.className = `status-${section.status}`;
+            listItem.innerHTML = `
+                <span class="status-icon"></span>
+                ${section.name} Section
+            `;
+            sectionChecklist.appendChild(listItem);
+        });
+    }
+
+    // Generate Button Click Event
+    generateButton.addEventListener('click', () => {
+        // Hide the generate button and show the progress container
+        generateButton.classList.add('hidden');
+        progressContainer.classList.remove('hidden');
+        checklistBox.classList.remove('hidden');
+
+        // Populate the checklist
+        populateChecklist();
+
+        // Start the progress simulation
+        simulateProgress();
+    });
+
+    // Simulate Progress Function
+    function simulateProgress() {
+        if (currentStep < steps.length) {
+            const step = steps[currentStep];
+            progressStatus.textContent = step.status;
+            progressFill.style.width = `${step.progress}%`;
+
+            // Update section status
+            if (step.sectionIndex !== undefined) {
+                sections[step.sectionIndex].status = "completed";
+                populateChecklist(); // Refresh the checklist
+            }
+
+            currentStep++;
+            setTimeout(simulateProgress, 1500); // Delay between steps
+        } else {
+            // Process complete, show the download container
+            progressContainer.classList.add('hidden');
+            downloadContainer.classList.remove('hidden');
+        }
+    }
+
+    // Download Button Click Event
+    downloadButton.addEventListener('click', () => {
+        alert('Downloading Excel file...');
+        // Replace this with actual file download logic
+    });
+});
