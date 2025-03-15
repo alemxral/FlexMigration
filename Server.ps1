@@ -60,6 +60,66 @@ while ($true) {
         }
     }
 
+        # API: Save JSON Data for Mapping
+    elseif ($request.HttpMethod -eq "POST" -and $path -eq "api/save-data-Mapping") {
+        try {
+            # Read the incoming JSON data from the request body
+            $reader = New-Object System.IO.StreamReader($request.InputStream)
+            $jsonData = $reader.ReadToEnd()
+            $reader.Close()
+
+            # Parse the JSON data
+            $data = ConvertFrom-Json $jsonData
+
+            # Define the file path for the Mapping JSON file
+            $filePath = "$dataDir\Mapping.json"
+
+            # Write the updated JSON data to the file
+            $jsonData | Set-Content -Path $filePath -Encoding utf8
+
+            Write-Host "Saved data to $filePath"
+
+            # Respond with success status
+            $response.StatusCode = 200
+            [System.Text.Encoding]::UTF8.GetBytes("{'status': 'success'}") | ForEach-Object { $response.OutputStream.Write($_, 0, $_.Length) }
+        } catch {
+            # Log the error and respond with an error status
+            $errorMessage = $_.Exception.Message
+            Write-Host "Error saving Mapping data: $errorMessage"
+            $response.StatusCode = 500
+            [System.Text.Encoding]::UTF8.GetBytes("{'status': 'error', 'message': '$errorMessage'}") | ForEach-Object { $response.OutputStream.Write($_, 0, $_.Length) }
+        }
+    }
+
+        # API: Load JSON Data for Mapping
+    elseif ($request.HttpMethod -eq "GET" -and $path -eq "api/load-data-Mapping") {
+        try {
+            # Define the file path for the Mapping JSON file
+            $filePath = "$dataDir\Mapping.json"
+
+            # Check if the file exists
+            if (-not (Test-Path $filePath)) {
+                $response.StatusCode = 404
+                [System.Text.Encoding]::UTF8.GetBytes("{'status': 'error', 'message': 'Mapping data file not found.'}") | ForEach-Object { $response.OutputStream.Write($_, 0, $_.Length) }
+                return
+            }
+
+            # Load the existing Mapping data
+            $jsonData = Get-Content -Path $filePath -Raw
+            $data = ConvertFrom-Json $jsonData
+
+            # Respond with the loaded data
+            $response.StatusCode = 200
+            [System.Text.Encoding]::UTF8.GetBytes(($jsonData -replace "'", '"')) | ForEach-Object { $response.OutputStream.Write($_, 0, $_.Length) }
+        } catch {
+            # Log the error and respond with an error status
+            $errorMessage = $_.Exception.Message
+            Write-Host "Error loading Mapping data: $errorMessage"
+            $response.StatusCode = 500
+            [System.Text.Encoding]::UTF8.GetBytes("{'status': 'error', 'message': '$errorMessage'}") | ForEach-Object { $response.OutputStream.Write($_, 0, $_.Length) }
+        }
+    }
+
     # API: Save JSON Data for InputFrame
     elseif ($request.HttpMethod -eq "POST" -and $path -eq "api/save-data-InputFrame") {
         $reader = New-Object System.IO.StreamReader($request.InputStream)
