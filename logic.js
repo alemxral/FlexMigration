@@ -268,7 +268,7 @@ document.getElementById('outputFileInput')?.addEventListener('change', async (ev
 // Track whether the Vlookup section has been initialized
 let isVlookupInitialized = false;
 
-// Function to populate the dropdown with OutputFrame headers
+// Function to populate the dropdown with InputFrame headers
 function populateVlookupDropdown() {
     const dropdown = document.getElementById('vlookupHeaderDropdown');
     if (!dropdown) {
@@ -282,21 +282,21 @@ function populateVlookupDropdown() {
     // Add default option
     const defaultOption = document.createElement('option');
     defaultOption.value = '';
-    defaultOption.textContent = '-- Select OutputFrame Header --';
+    defaultOption.textContent = '-- Select InputFrame Header --'; // Updated text for InputFrame
     dropdown.appendChild(defaultOption);
 
-    // Get headers from OutputFrame
-    const outputHeaders = outputFrame.headers || [];
+    // Get headers from InputFrame
+    const inputHeaders = inputFrame.headers || [];
 
     // Check if headers are available
-    if (outputHeaders.length === 0) {
-        console.warn("Cannot populate Vlookup dropdown: Missing headers from OutputFrame.");
+    if (inputHeaders.length === 0) {
+        console.warn("Cannot populate Vlookup dropdown: Missing headers from InputFrame.");
         createNotification("Cannot populate Vlookup dropdown: Missing headers.");
         return;
     }
 
-    // Populate the dropdown with OutputFrame headers
-    outputHeaders.forEach((header) => {
+    // Populate the dropdown with InputFrame headers
+    inputHeaders.forEach((header) => {
         const option = document.createElement('option');
         option.value = header;
         option.textContent = header;

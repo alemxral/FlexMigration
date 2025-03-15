@@ -113,3 +113,8 @@
 15/03/2025 12:42:32 - PowerShell Script Path: C:\Users\pc\FlexMigration\Server.ps1
 15/03/2025 12:42:32 - Executing: powershell -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "C:\Users\pc\FlexMigration\Server.ps1"
 15/03/2025 12:42:33 - Opening: chrome.exe http://localhost:8080/index.html
+15/03/2025 19:22:25 - PowerShell processes terminated.
+15/03/2025 19:22:25 - Script Path: C:\Users\pc\FlexMigration
+15/03/2025 19:22:25 - PowerShell Script Path: C:\Users\pc\FlexMigration\Server.ps1
+15/03/2025 19:22:25 - Executing: powershell -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "C:\Users\pc\FlexMigration\Server.ps1"
+15/03/2025 19:22:26 - Opening: chrome.exe http://localhost:8080/index.html
