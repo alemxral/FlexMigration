@@ -144,3 +144,21 @@ export function createSearchableDropdown(options) {
 
     return container;
 }
+
+    // Helper function to create a dropdown with a default empty option
+  export function createDropdownWithEmpty(options, placeholder = '-- Select Header --') {
+        const select = document.createElement('select');
+        const emptyOption = document.createElement('option');
+        emptyOption.value = '';
+        emptyOption.textContent = placeholder;
+        select.appendChild(emptyOption);
+
+        options.forEach((optionText) => {
+            const option = document.createElement('option');
+            option.value = optionText;
+            option.textContent = optionText;
+            select.appendChild(option);
+        });
+
+        return select;
+    }

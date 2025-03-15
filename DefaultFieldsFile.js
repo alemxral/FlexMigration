@@ -2,7 +2,7 @@
 // Default Fields
 // ==============================
 
-import { createDropdown, createSearchableDropdown } from "./utils.js";
+import { createDropdown, createSearchableDropdown,createNotification,createDropdownWithEmpty } from "./utils.js";
 
 // DefaultFieldsFile Class
 export class DefaultFieldsFile {
@@ -17,11 +17,10 @@ export class DefaultFieldsFile {
             const parsedData = await parseExcelFile(file);
             this.data = parsedData; // Store the parsed data
             this.headers = Object.keys(parsedData); // Extract headers
-            console.log("DEBUG: Excel data loaded successfully:", this.data);
-            console.log("DEBUG: Headers extracted:", this.headers);
+            console.log("Excel data loaded into DefaultFieldsFile instance:", this.data);
             return this.data;
         } catch (error) {
-            console.error("DEBUG: Error parsing Excel file:", error);
+            console.error("Error parsing Excel file:", error);
             throw new Error("Error uploading Excel file.");
         }
     }
@@ -42,10 +41,10 @@ export class DefaultFieldsFile {
             }
 
             const result = await response.json();
-            console.log("DEBUG: Default Fields data saved successfully:", result);
+            console.log("Default Fields data saved successfully:", result);
             return result;
         } catch (error) {
-            console.error("DEBUG: Error saving Default Fields data:", error);
+            console.error("Error saving Default Fields data:", error);
             throw new Error("Error saving Default Fields data. Please try again.");
         }
     }
@@ -60,11 +59,10 @@ export class DefaultFieldsFile {
 
             this.data = await response.json();
             this.headers = Object.keys(this.data); // Extract headers
-            console.log("DEBUG: Default Fields data loaded from server:", this.data);
-            console.log("DEBUG: Headers extracted:", this.headers);
+            console.log("Default Fields data loaded from server:", this.data);
             return this.data;
         } catch (error) {
-            console.error("DEBUG: Error loading Default Fields data:", error);
+            console.error("Error loading Default Fields data:", error);
             throw new Error("Error loading Default Fields data. Please try again.");
         }
     }
@@ -90,34 +88,13 @@ export class DefaultFieldsFile {
         this.populateSearchableDropdown(valuesCell, values);
     }
 
-    // Update Filter Values Dropdown Based on Filter Header Selection or Search Input
-    updateFilterValuesDropdown(row) {
-        const filterHeaderDropdown = row.querySelector('td:nth-child(3) select');
-        const filterValuesCell = row.querySelector('td:nth-child(4) .searchable-dropdown');
-        const selectedHeader = filterHeaderDropdown.value;
-
-        let values = [];
-        if (selectedHeader && this.data[selectedHeader]) {
-            values = this.data[selectedHeader];
-        }
-
-        // Filter values based on search input
-        const searchInput = filterValuesCell.querySelector('input');
-        if (searchInput) {
-            const searchTerm = searchInput.value.toLowerCase();
-            values = values.filter((value) => value.toLowerCase().includes(searchTerm));
-        }
-
-        this.populateSearchableDropdown(filterValuesCell, values);
-    }
-
     // Populate a Searchable Dropdown with Options
     populateSearchableDropdown(dropdownContainer, options) {
         const input = dropdownContainer.querySelector('input');
         const ul = dropdownContainer.querySelector('ul');
 
         if (!input || !ul) {
-            console.error("DEBUG: Invalid dropdown container structure.");
+            console.error("Invalid dropdown container structure.");
             return;
         }
 
@@ -126,7 +103,7 @@ export class DefaultFieldsFile {
 
         // Validate options
         if (!Array.isArray(options)) {
-            console.error("DEBUG: Invalid options provided for searchable dropdown.");
+            console.error("Invalid options provided for searchable dropdown.");
             return;
         }
 
@@ -143,24 +120,6 @@ export class DefaultFieldsFile {
 
         // Reset input value
         input.value = '';
-    }
-
-    // Helper function to create a dropdown with a default empty option
-    createDropdownWithEmpty(options, placeholder = '-- Select Header --') {
-        const select = document.createElement('select');
-        const emptyOption = document.createElement('option');
-        emptyOption.value = '';
-        emptyOption.textContent = placeholder;
-        select.appendChild(emptyOption);
-
-        options.forEach((optionText) => {
-            const option = document.createElement('option');
-            option.value = optionText;
-            option.textContent = optionText;
-            select.appendChild(option);
-        });
-
-        return select;
     }
 
     // Generate Table Rows
@@ -195,23 +154,9 @@ export class DefaultFieldsFile {
             valuesCell.appendChild(valuesDropdown);
             row.appendChild(valuesCell);
 
-            // Column 3: Filter Header
-            const filterHeaderCell = document.createElement('td');
-            const filterHeaderDropdown = this.createDropdownWithEmpty(this.headers);
-            filterHeaderCell.appendChild(filterHeaderDropdown);
-            row.appendChild(filterHeaderCell);
-
-            // Column 4: Filter Values (Searchable Dropdown)
-            const filterValuesCell = document.createElement('td');
-            const filterValuesDropdown = createSearchableDropdown([]);
-            filterValuesCell.appendChild(filterValuesDropdown);
-            row.appendChild(filterValuesCell);
-
             // Add Event Listeners for Filtering
             header1Dropdown.addEventListener('change', () => this.updateValuesDropdown(row));
-            filterHeaderDropdown.addEventListener('change', () => this.updateFilterValuesDropdown(row));
             valuesDropdown.querySelector('input').addEventListener('input', () => this.updateValuesDropdown(row));
-            filterValuesDropdown.querySelector('input').addEventListener('input', () => this.updateFilterValuesDropdown(row));
 
             tableBody.appendChild(row);
         }
@@ -235,18 +180,64 @@ document.getElementById('saveToJsonButton')?.addEventListener('click', async () 
 });
 
 // Load Button - Load Default Fields from JSON via Server
+// Load Button - Load Default Fields from JSON via Server
+// Load Button - Load Default Fields from JSON via Server
 document.getElementById('loadFromJsonButton')?.addEventListener('click', async () => {
     try {
-        await defaultFieldsFile.loadFromServer('/api/load-data-DefaulFieldsFile');
+        // Step 1: Fetch DefaultFieldsFile.json to load headers and initial data
+        const response1 = await fetch('/api/load-data-DefaulFieldsFile');
+        if (!response1.ok) {
+            throw new Error(`Failed to load Default Fields data: ${response1.status}`);
+        }
+        const defaultFieldsFileData = await response1.json();
+        console.log("Default Fields File Data Loaded:", defaultFieldsFileData);
+
+        // Step 2: Fetch the pairs of values (header1 and value)
+        const response2 = await fetch('/api/load-data-DefaulFields');
+        if (!response2.ok) {
+            throw new Error(`Failed to load Default Fields mappings: ${response2.status}`);
+        }
+        const defaultFieldsMappingsResponse = await response2.json();
+
+        // Ensure the mappings are an array
+        const defaultFieldsMappings = Array.isArray(defaultFieldsMappingsResponse)
+            ? defaultFieldsMappingsResponse
+            : defaultFieldsMappingsResponse.mappings || [];
+
+        console.log("Default Fields Mappings Loaded:", defaultFieldsMappings);
+
+        // Step 3: Clear previous content
         const tableBody = document.getElementById('defaultFieldsTableBody');
         if (!tableBody) {
-            console.error("DEBUG: Table body element not found.");
-            return;
+            throw new Error("Table body element not found.");
         }
-        defaultFieldsFile.generateTableRows(tableBody);
+        tableBody.innerHTML = '';
+
+        // Step 4: Populate the table with the loaded data
+        defaultFieldsMappings.forEach((mapping, index) => {
+            const row = document.createElement('tr');
+
+            // Column 1: Header 1 (Dropdown)
+            const header1Cell = document.createElement('td');
+            const header1Dropdown = createDropdownWithEmpty(defaultFieldsFileData.headers); // Use headers from DefaultFieldsFile.json
+            header1Dropdown.value = mapping.header1 || '';
+            header1Cell.appendChild(header1Dropdown);
+            row.appendChild(header1Cell);
+
+            // Column 2: Values (Input Field)
+            const valuesCell = document.createElement('td');
+            const valuesInput = document.createElement('input');
+            valuesInput.type = 'text';
+            valuesInput.value = mapping.value || '';
+            valuesCell.appendChild(valuesInput);
+            row.appendChild(valuesCell);
+
+            tableBody.appendChild(row);
+        });
+
         createNotification("Default Fields data loaded successfully!");
     } catch (error) {
-        console.error("DEBUG: Error loading Default Fields data:", error);
+        console.error("Error loading Default Fields data:", error);
         createNotification("Error loading Default Fields data. Please try again.");
     }
 });
@@ -306,3 +297,89 @@ async function parseExcelFile(file) {
         reader.readAsArrayBuffer(file);
     });
 }
+
+// Save Button - Save Default Fields Mapping to JSON via Server
+document.getElementById('saveDefaultFieldsButton')?.addEventListener('click', async () => {
+    try {
+        const tableRows = document.querySelectorAll('#defaultFieldsTableBody tr');
+        const defaultFieldsData = [];
+
+        // Collect data from the table
+        tableRows.forEach((row) => {
+            const header1 = row.querySelector('td:nth-child(1) select')?.value || '';
+            const value = row.querySelector('td:nth-child(2) input')?.value || '';
+
+            defaultFieldsData.push({
+                header1,
+                value,
+            });
+        });
+
+        console.log("Default Fields Data to Save:", defaultFieldsData);
+
+        // Send the data to the server
+        const response = await fetch('/api/save-data-DefaulFields', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(defaultFieldsData),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to save Default Fields data: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log("Default Fields data saved successfully:", result);
+        createNotification("Default Fields data saved successfully!");
+    } catch (error) {
+        console.error("Error saving Default Fields data:", error);
+        createNotification("Error saving Default Fields data. Please try again.");
+    }
+});
+
+// Load Button - Load Default Fields Mapping from JSON via Server
+document.getElementById('loadDefaultFieldsButton')?.addEventListener('click', async () => {
+    try {
+        // Fetch the saved data from the server
+        const response = await fetch('/api/load-data-DefaulFields');
+        if (!response.ok) {
+            throw new Error(`Failed to load Default Fields data: ${response.status}`);
+        }
+
+        const defaultFieldsData = await response.json();
+        console.log("Default Fields Data Loaded:", defaultFieldsData);
+
+        // Clear previous content
+        const tableBody = document.getElementById('defaultFieldsTableBody');
+        tableBody.innerHTML = '';
+
+        // Populate the table with the loaded data
+        defaultFieldsData.forEach((rowData) => {
+            const row = document.createElement('tr');
+
+            // Column 1: Header 1
+            const header1Cell = document.createElement('td');
+            const header1Dropdown = createDropdownWithEmpty(this.headers); // Replace with actual dropdown creation logic
+            header1Dropdown.value = rowData.header1 || '';
+            header1Cell.appendChild(header1Dropdown);
+            row.appendChild(header1Cell);
+
+            // Column 2: Values
+            const valuesCell = document.createElement('td');
+            const valuesInput = document.createElement('input');
+            valuesInput.type = 'text';
+            valuesInput.value = rowData.value || '';
+            valuesCell.appendChild(valuesInput);
+            row.appendChild(valuesCell);
+
+            tableBody.appendChild(row);
+        });
+
+        createNotification("Default Fields data loaded successfully!");
+    } catch (error) {
+        console.error("Error loading Default Fields data:", error);
+        createNotification("Error loading Default Fields data. Please try again.");
+    }
+});
