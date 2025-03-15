@@ -159,10 +159,17 @@ function renderMappingTable() {
     console.log("Mapping table rendered successfully.");
 }
 
+// Function to populate a dropdown with headers
 function populateDropdownWithHeaders(selectElement, headers) {
+    // Clear previous options
     selectElement.innerHTML = '';
-    selectElement.appendChild(createEmptyOption('-- Select Header --'));
-    headers.forEach(header => {
+
+    // Add default empty option
+    const defaultOption = createEmptyOption('-- Select Header --');
+    selectElement.appendChild(defaultOption);
+
+    // Populate the dropdown with headers
+    headers.forEach((header) => {
         const option = document.createElement('option');
         option.value = header;
         option.textContent = header;
@@ -207,15 +214,29 @@ async function saveMappings() {
 async function loadMappingsFromServer() {
     try {
         const response = await fetch('/api/load-data-Mapping');
-        if (!response.ok) throw new Error(`Failed to load mappings: ${response.status}`);
-        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(`Failed to load mappings: ${response.status}`);
+        }
 
+        const jsonArray = await response.json();
+
+        // Convert the array format to the expected object format
+        const savedMappings = {};
+        jsonArray.forEach(pair => {
+            savedMappings[pair.inputHeader] = pair.outputHeader;
+        });
+
+        console.log("Mappings loaded from server:", savedMappings);
+
+        // Clear existing mappings and populate with loaded data
         mapping.clearMappings();
-        Object.entries(data).forEach(([inputHeader, outputHeader]) => {
+        Object.entries(savedMappings).forEach(([inputHeader, outputHeader]) => {
             mapping.addMapping(inputHeader, outputHeader);
         });
 
-        renderMappingTableWithSavedMappings(data);
+        // Render the mapping table with pre-selected options
+        renderMappingTableWithSavedMappings(savedMappings);
+
         createNotification("Mappings loaded successfully.");
     } catch (error) {
         console.error("Error loading mappings:", error);
@@ -223,42 +244,73 @@ async function loadMappingsFromServer() {
     }
 }
 
+// Function to render the mapping table with saved mappings
 function renderMappingTableWithSavedMappings(savedMappings) {
     const tableBody = document.getElementById('mappingTableBody');
-    if (!tableBody) return console.error("Mapping table body not found.");
+    if (!tableBody) {
+        console.error("Mapping table body not found.");
+        return;
+    }
 
+    // Get headers from InputFrame and OutputFrame
     const inputHeaders = inputFrame.headers || [];
     const outputHeaders = outputFrame.headers || [];
-    const maxRows = Math.max(inputHeaders.length, outputHeaders.length);
 
+    // Determine the maximum number of rows
+    const maxRows = Math.max(inputHeaders.length, outputHeaders.length, Object.keys(savedMappings).length);
+
+    // Clear previous content
     tableBody.innerHTML = '';
+
+    // Generate rows for the mapping table
     for (let i = 0; i < maxRows; i++) {
         const row = document.createElement('tr');
 
-        // Input Header Column
+        // Create the Input Header column
         const inputCell = document.createElement('td');
         const inputSelect = document.createElement('select');
         inputSelect.className = 'header-select';
+
+        // Populate the Input dropdown
         populateDropdownWithHeaders(inputSelect, inputHeaders);
-        const savedInputHeader = Object.keys(savedMappings)[i];
-        if (savedInputHeader) inputSelect.value = savedInputHeader;
+
+        // Set the selected option based on saved mappings
+        const inputHeader = Object.keys(savedMappings)[i];
+        if (inputHeader && inputHeaders.includes(inputHeader)) {
+            inputSelect.value = inputHeader;
+        } else {
+            inputSelect.value = ''; // Default to empty
+        }
         inputCell.appendChild(inputSelect);
 
-        // Output Header Column
+        // Create the Output Header column
         const outputCell = document.createElement('td');
         const outputSelect = document.createElement('select');
         outputSelect.className = 'header-select';
+
+        // Populate the Output dropdown
         populateDropdownWithHeaders(outputSelect, outputHeaders);
-        const savedOutputHeader = savedMappings[savedInputHeader];
-        if (savedOutputHeader) outputSelect.value = savedOutputHeader;
+
+        // Set the selected option based on saved mappings
+        const outputHeader = savedMappings[inputHeader];
+        if (outputHeader && outputHeaders.includes(outputHeader)) {
+            outputSelect.value = outputHeader;
+        } else {
+            outputSelect.value = ''; // Default to empty
+        }
         outputCell.appendChild(outputSelect);
 
+        // Append cells to the row
         row.appendChild(inputCell);
         row.appendChild(outputCell);
+
+        // Append row to the table body
         tableBody.appendChild(row);
     }
+
     console.log("Mapping table rendered successfully with saved mappings.");
 }
+
 
 // ==============================
 // FILE UPLOAD HANDLERS
