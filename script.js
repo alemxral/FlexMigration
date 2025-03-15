@@ -204,3 +204,81 @@ document.getElementById('fileDiscard')?.addEventListener('click', function () {
     createNotification("File discarded.");
 });
 
+// Modal functionality
+document.addEventListener('DOMContentLoaded', () => {
+    const addRuleButton = document.getElementById('addRuleButton');
+    const addRuleModal = document.getElementById('addRuleModal');
+    const closeModalButtons = document.querySelectorAll('.close-modal');
+    const addRuleForm = document.getElementById('addRuleForm');
+    const userDefinedRulesBody = document.getElementById('userDefinedRulesBody');
+
+    // Open the modal
+    addRuleButton.addEventListener('click', () => {
+        addRuleModal.style.display = 'flex';
+    });
+
+    // Close the modal
+    closeModalButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            addRuleModal.style.display = 'none';
+        });
+    });
+
+    // Close the modal when clicking outside of it
+    window.addEventListener('click', (event) => {
+        if (event.target === addRuleModal) {
+            addRuleModal.style.display = 'none';
+        }
+    });
+
+    // Handle form submission
+    addRuleForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        // Get form data
+        const ruleName = document.getElementById('ruleName').value.trim();
+        const ruleDescription = document.getElementById('ruleDescription').value.trim();
+
+        // Validate the form
+        if (!ruleName || !ruleDescription) {
+            alert('Please fill in all fields.');
+            return;
+        }
+
+        // Create a new row for the table
+        const newRow = document.createElement('tr');
+
+        // Rule Name Cell
+        const ruleNameCell = document.createElement('td');
+        ruleNameCell.textContent = ruleName;
+        newRow.appendChild(ruleNameCell);
+
+        // Description Cell
+        const descriptionCell = document.createElement('td');
+        descriptionCell.textContent = ruleDescription;
+        newRow.appendChild(descriptionCell);
+
+        // Action Cell
+        const actionCell = document.createElement('td');
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Delete';
+        deleteButton.className = 'delete-rule-button';
+        deleteButton.addEventListener('click', () => {
+            userDefinedRulesBody.removeChild(newRow);
+        });
+        actionCell.appendChild(deleteButton);
+        newRow.appendChild(actionCell);
+
+        // Append the new row to the table
+        userDefinedRulesBody.appendChild(newRow);
+
+        // Clear the form
+        addRuleForm.reset();
+
+        // Close the modal
+        addRuleModal.style.display = 'none';
+
+        // Optionally, display a success notification
+        createNotification(`Rule "${ruleName}" added successfully!`);
+    });
+});

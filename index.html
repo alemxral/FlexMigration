@@ -186,7 +186,68 @@
             </div>
             <div id="flexrules-wrapper" class="section-wrapper">
                 <h2>FlexRules Section</h2>
-                <p>This is the flexrules section content.</p>
+                <div class="flexrules-header">
+                    <select id="rulePackDropdown" class="rule-pack-dropdown">
+                        <option value="">Select Rule Pack</option>
+                        <option value="pack1">Rule Pack 1</option>
+                        <option value="pack2">Rule Pack 2</option>
+                    </select>
+                    <button id="addRuleButton" class="add-rule-button">Add Rule</button>
+                </div>
+            
+                <!-- User-Defined Rules -->
+                <div class="rules-box">
+                    <h3>User-Defined Rules</h3>
+                    <table class="rules-table">
+                        <thead>
+                            <tr>
+                                <th>Rule Name</th>
+                                <th>Description</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userDefinedRulesBody">
+                            <!-- Example Row -->
+                            <tr>
+                                <td>Email Validation</td>
+                                <td>Validates email format</td>
+                                <td><button class="delete-rule-button">Delete</button></td>
+                            </tr>
+                            <tr>
+                                <td>Salary Range</td>
+                                <td>Ensures salary is within range</td>
+                                <td><button class="delete-rule-button">Delete</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            
+                <!-- Default Rules -->
+                <div class="rules-box">
+                    <h3>Default Rules</h3>
+                    <table class="rules-table">
+                        <thead>
+                            <tr>
+                                <th>Rule Name</th>
+                                <th>Description</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="defaultRulesBody">
+                            <!-- Example Row -->
+                            <tr>
+                                <td>Data Completeness</td>
+                                <td>Ensures all fields are filled</td>
+                                <td><button class="delete-rule-button" disabled>Delete</button></td>
+                            </tr>
+                            <tr>
+                                <td>Date Format</td>
+                                <td>Standardizes date formats</td>
+                                <td><button class="delete-rule-button" disabled>Delete</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <div id="options-wrapper" class="section-wrapper">
                 <h2>Options Section</h2>
@@ -222,7 +283,30 @@
           </body>
     </div>
 
+        <!-- Add Rule Button -->
+<button id="addRuleButton" class="add-rule-button">Add Rule</button>
 
+<!-- Modal for Adding Rules -->
+<div id="addRuleModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2>Add New Rule</h2>
+        <form id="addRuleForm">
+            <div class="form-group">
+                <label for="ruleName">Rule Name:</label>
+                <input type="text" id="ruleName" name="ruleName" placeholder="Enter rule name" required />
+            </div>
+            <div class="form-group">
+                <label for="ruleDescription">Description:</label>
+                <textarea id="ruleDescription" name="ruleDescription" placeholder="Describe the rule" rows="3" required></textarea>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="primary">Save Rule</button>
+                <button type="button" class="secondary close-modal">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
 
             <!-- Notification Panel -->
         <div id="notificationPanel" class="notification-panel"></div>

@@ -1,14 +1,18 @@
 /* Define CSS Variables */
 :root {
-    --primary-bg: #000;
-    --secondary-bg: #111;
-    --accent-color: #fff;
-    --text-color: #fff;
-    --gray-light: #555;
-    --gray-medium: #777;
-    --gray-dark: #222;
-    --border-color: #444;
-    --red:rgba(232, 23, 23);
+    --primary-bg: #000; /* Main background color */
+    --secondary-bg: #111; /* Slightly lighter background for contrast */
+    --accent-color: #fff; /* Primary accent color (white) */
+    --text-color: #fff; /* Default text color */
+    --gray-light: #555; /* Light gray for subtle details */
+    --gray-medium: #777; /* Medium gray for borders or muted elements */
+    --gray-dark: #222; /* Dark gray for hover effects or deeper contrast */
+    --border-color: #444; /* Border color for tables, buttons, etc. */
+    --red: rgba(232, 23, 23); /* Red for errors, delete buttons, etc. */
+    --hover-bg: #333; /* Background color for hover states */
+    --active-bg: #444; /* Background color for active states */
+    --success-color: #00ff00; /* Green for success messages */
+    --warning-color: #ffcc00; /* Yellow for warnings */
 }
 
 /* General Reset */
@@ -667,4 +671,295 @@ th {
 .delete-icon:hover {
     
     transform: scale(1.2); /* Scale the icon to 1.2 times its original size */
+}
+
+/* General Reset */
+
+
+/* FlexRules Section Styling */
+#flexrules-wrapper {
+    padding: 20px;
+    background-color: var(--secondary-bg);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#flexrules-wrapper h2 {
+    color: var(--accent-color);
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.flexrules-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.rule-pack-dropdown {
+    padding: 8px;
+    font-size: 16px;
+    background-color: var(--secondary-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    width: 200px;
+}
+
+.add-rule-button {
+    padding: 8px 16px;
+    font-size: 16px;
+    background-color: var(--accent-color);
+    color: var(--primary-bg);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 0; /* Aligns the button to the left */
+    transition: transform 0.2s ease-in-out; /* Adds a hover effect */
+}
+
+.add-rule-button:hover {
+    transform: scale(1.05); /* Slightly enlarges the button on hover */
+    background-color: var(--hover-bg);
+}
+
+
+.rules-box {
+    margin-top: 20px;
+    background-color: var(--secondary-bg);
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.rules-box h3 {
+    margin-top: 0;
+    font-size: 18px;
+    color: var(--accent-color);
+}
+
+.rules-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.rules-table th,
+.rules-table td {
+    border: 1px solid var(--border-color);
+    padding: 8px;
+    text-align: left;
+    color: var(--text-color);
+}
+
+.rules-table th {
+    background-color: var(--gray-dark);
+    font-weight: bold;
+}
+
+.delete-rule-button {
+    padding: 4px 8px;
+    font-size: 14px;
+    background-color: var(--accent-color);
+    color: var(--primary-bg);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.delete-rule-button:hover {
+    background-color: rgba(232, 23, 23, 0.8);
+}
+
+.delete-rule-button:disabled {
+    background-color: var(--gray-medium);
+    cursor: not-allowed;
+}
+
+/* Buttons */
+button {
+    padding: 8px 16px;
+    font-size: 14px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button.primary {
+    background-color: var(--accent-color);
+    color: var(--primary-bg);
+}
+
+button.primary:hover {
+    background-color: var(--hover-bg);
+}
+
+button.danger {
+    background-color: var(--red);
+    color: var(--primary-bg);
+}
+
+button.danger:hover {
+    background-color: rgba(232, 23, 23, 0.8);
+}
+
+/* Input and Dropdowns */
+input,
+select {
+    padding: 8px;
+    font-size: 14px;
+    background-color: var(--secondary-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+/* Notifications */
+.notification {
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 4px;
+    color: var(--primary-bg);
+    font-size: 14px;
+}
+
+.notification.success {
+    background-color: var(--success-color);
+}
+
+.notification.warning {
+    background-color: var(--warning-color);
+}
+
+.notification.error {
+    background-color: var(--red);
+}
+
+/* Modal Styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1000; /* Ensure it's on top */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    justify-content: center;
+    align-items: center;
+    overflow: auto;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.modal-content {
+    background-color: var(--secondary-bg);
+    color: var(--text-color);
+    margin: auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    animation: slideUp 0.3s ease-in-out;
+}
+
+.modal h2 {
+    margin-top: 0;
+    color: var(--accent-color);
+}
+
+.close-modal {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--text-color);
+    cursor: pointer;
+}
+
+.close-modal:hover {
+    color: var(--red);
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--secondary-bg);
+    color: var(--text-color);
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.form-actions button {
+    padding: 8px 16px;
+    font-size: 14px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.form-actions .primary {
+    background-color: var(--accent-color);
+    color: var(--primary-bg);
+}
+
+.form-actions .primary:hover {
+    background-color: var(--hover-bg);
+}
+
+.form-actions .secondary {
+    background-color: var(--gray-dark);
+    color: var(--text-color);
+}
+
+.form-actions .secondary:hover {
+    background-color: var(--gray-medium);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
