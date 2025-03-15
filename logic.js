@@ -274,10 +274,51 @@ function populateVlookupDropdown() {
         option.textContent = header;
         dropdown.appendChild(option);
     });
+
+    updateActiveVlookupsList();
 }
 
-// Function to add a new Vlookup
-document.getElementById('addVlookupButton')?.addEventListener('click', () => {
+async function saveVlookupsToServer() {
+    try {
+        // Retrieve all VLOOKUPs from the VlookupManager
+        const vlookups = vlookupManager.getAllVlookups();
+
+        // Fetch existing VLOOKUPs from the server (if any)
+        const response = await fetch('/api/load-data-VlookupManager');
+        if (!response.ok) {
+            throw new Error(`Failed to load VLOOKUP data: ${response.status}`);
+        }
+        const existingData = await response.json();
+
+        // Merge existing data with the current VLOOKUPs
+        const updatedData = { ...existingData, ...vlookups };
+
+        // Send the updated data to the server
+        const saveResponse = await fetch('/api/save-data-VlookupManager', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updatedData),
+        });
+
+        if (!saveResponse.ok) {
+            throw new Error(`Failed to save VLOOKUP data: ${saveResponse.status}`);
+        }
+
+        console.log("VLOOKUP data saved successfully.");
+        createNotification("VLOOKUP data saved successfully.");
+    } catch (error) {
+        console.error("Error saving VLOOKUP data:", error);
+        createNotification("Error saving VLOOKUP data. Please try again.");
+    }
+}
+
+
+// Temporary storage for uploaded Excel data
+let tempUploadedData = null;
+
+document.getElementById('addVlookupButtonImport')?.addEventListener('click', async () => {
     const dropdown = document.getElementById('vlookupHeaderDropdown');
     const selectedHeader = dropdown.value;
 
@@ -286,74 +327,199 @@ document.getElementById('addVlookupButton')?.addEventListener('click', () => {
         return;
     }
 
-    // Check if a Vlookup already exists for the selected header
-    if (vlookupManager.getVlookup(selectedHeader)) {
-        createNotification(`Vlookup already exists for header: ${selectedHeader}`);
+    // Trigger file input dialog
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = '.xlsx,.xls';
+
+    fileInput.addEventListener('change', async (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        try {
+            // Display the uploaded file name
+            const uploadedFileNameElement = document.getElementById('uploadedFileName');
+            if (uploadedFileNameElement) {
+                uploadedFileNameElement.textContent = `Uploaded file: ${file.name}`;
+            }
+
+            // Parse the uploaded Excel file
+            const reader = new FileReader();
+
+            reader.onload = async (e) => {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: "array" });
+                    const sheetName = workbook.SheetNames[0];
+                    const sheet = workbook.Sheets[sheetName];
+
+                    // Convert the sheet to JSON
+                    const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+                    // Extract headers and data
+                    const headers = jsonData[0];
+                    const rows = jsonData.slice(1).map(row => {
+                        const rowData = {};
+                        headers.forEach((header, index) => {
+                            rowData[header] = row[index];
+                        });
+                        return rowData;
+                    });
+
+                    // Store the parsed data temporarily
+                    tempUploadedData = { headers, rows };
+
+                    createNotification(`Excel file imported successfully.`);
+                } catch (error) {
+                    console.error("Error processing Excel file:", error);
+                    createNotification("Error importing Excel file. Please try again.");
+                }
+            };
+
+            reader.onerror = () => {
+                console.error("Error reading file.");
+                createNotification("Error reading file.");
+            };
+
+            reader.readAsArrayBuffer(file);
+        } catch (error) {
+            console.error("Error uploading file:", error);
+            createNotification("Error uploading file. Please try again.");
+        }
+    });
+
+    fileInput.click(); // Open file selection dialog
+});
+
+document.getElementById('addVlookupButton')?.addEventListener('click', async () => {
+    const dropdown = document.getElementById('vlookupHeaderDropdown');
+    const selectedHeader = dropdown.value;
+
+    if (!selectedHeader) {
+        createNotification("Please select an OutputFrame header.");
         return;
     }
 
-    // Add a placeholder Vlookup (if no file is uploaded yet)
-    vlookupManager.addVlookup(selectedHeader, { headers: [], rows: [] });
+    // Check if there is temporary uploaded data
+    if (!tempUploadedData) {
+        createNotification("No Excel file has been uploaded yet.");
+        return;
+    }
 
-    // Update the active Vlookups list
-    updateActiveVlookupsList();
-    createNotification(`Vlookup added for header: ${selectedHeader}`);
+    try {
+        // Save the temporary data to the VlookupManager
+        vlookupManager.addVlookup(selectedHeader, tempUploadedData);
+
+        // Clear the temporary data
+        tempUploadedData = null;
+
+        // Update the active Vlookups list
+        updateActiveVlookupsList();
+
+        // Optionally save the VLOOKUPs to the server
+        await saveVlookupsToServer();
+
+        createNotification(`Vlookup added for header: ${selectedHeader}`);
+    } catch (error) {
+        console.error("Error adding Vlookup:", error);
+        createNotification("Error adding Vlookup. Please try again.");
+    }
 });
 
-function updateActiveVlookupsList() {
+
+async function updateActiveVlookupsList() {
     const list = document.getElementById('activeVlookupsList');
     if (!list) return;
 
-    // Clear previous content
-    list.innerHTML = '';
+    try {
+        // Fetch the latest VLOOKUP data from the server
+        const vlookups = await vlookupManager.fetchVlookupsFromServer();
 
-    const vlookups = vlookupManager.getAllVlookups();
-    Object.keys(vlookups).forEach((header) => {
-        const listItem = document.createElement('li');
-        listItem.textContent = `Vlookup for ${header}`;
-        listItem.addEventListener('click', () => {
-            displayVlookupContent(header);
+        // Clear previous content
+        list.innerHTML = '';
+
+        // Populate the list with the fetched data
+        Object.keys(vlookups).forEach((header) => {
+            const listItem = document.createElement('li');
+            listItem.textContent = `Vlookup for ${header}`;
+            listItem.addEventListener('click', () => {
+                displayVlookupContent(header);
+            });
+            list.appendChild(listItem);
         });
-        list.appendChild(listItem);
-    });
+    } catch (error) {
+        console.error("Error updating active VLOOKUPs list:", error);
+        createNotification("Error loading active VLOOKUPs. Please try again.");
+    }
 }
 
-// Function to display Vlookup content in the table
+
 function displayVlookupContent(header) {
     const tableBody = document.getElementById('vlookupContentBody');
     if (!tableBody) return;
 
-    // Clear previous content
-    tableBody.innerHTML = '';
+    try {
+        // Fetch the latest VLOOKUP data from the server
+        vlookupManager.fetchVlookupsFromServer().then((vlookups) => {
+            const vlookupData = vlookups[header];
 
-    // Get the Vlookup data for the selected header
-    const vlookupData = vlookupManager.getVlookup(header);
-    if (!vlookupData) {
-        createNotification(`No Vlookup data found for header: ${header}`);
-        return;
-    }
+            if (!vlookupData || !vlookupData.rows || vlookupData.rows.length === 0) {
+                console.warn(`No VLOOKUP data found for header: ${header}`);
+                createNotification(`No VLOOKUP data found for header: ${header}`);
+                tableBody.innerHTML = '<tr><td colspan="100" style="text-align: center;">No data available</td></tr>';
+                return;
+            }
 
-    const { headers, rows } = vlookupData;
+            // Clear previous content
+            tableBody.innerHTML = '';
 
-    // Create table header
-    const headerRow = document.createElement('tr');
-    headers.forEach((headerText) => {
-        const th = document.createElement('th');
-        th.textContent = headerText;
-        headerRow.appendChild(th);
-    });
-    tableBody.appendChild(headerRow);
+            // Display the VLOOKUP data in the table
+            const { headers, rows } = vlookupData;
+            console.log("Headers:", headers); // Debugging: Log headers
+            console.log("Rows (raw):", rows); // Debugging: Log raw rows
 
-    // Create table body
-    rows.forEach((row) => {
-        const tr = document.createElement('tr');
-        headers.forEach((headerText) => {
-            const td = document.createElement('td');
-            td.textContent = row[headerText] || '';
-            tr.appendChild(td);
+            // Parse rows into objects
+            const parsedRows = rows.map(row => {
+                if (typeof row === "string") {
+                    // Clean the row by removing @{, }, and trailing )
+                    const cleanedRow = row.replace(/^@\{|\}$/g, '').trim();
+                    const obj = {};
+                    // Split the string by semicolon and then by equals sign
+                    cleanedRow.split(';').forEach(pair => {
+                        const [key, value] = pair.split('=').map(part => part.trim());
+                        obj[key] = value;
+                    });
+                    return obj;
+                } else if (typeof row === "object") {
+                    // If the row is already an object, use it directly
+                    return row;
+                } else {
+                    throw new Error("Invalid row format. Rows must be strings or objects.");
+                }
+            });
+
+            console.log("Rows (parsed):", parsedRows); // Debugging: Log parsed rows
+
+            // Render parsed rows in the table
+            parsedRows.forEach((row) => {
+                const tr = document.createElement('tr');
+                headers.forEach((headerText) => {
+                    const td = document.createElement('td');
+                    td.textContent = row[headerText] || ''; // Handle undefined values
+                    tr.appendChild(td);
+                });
+                tableBody.appendChild(tr);
+            });
+
+            createNotification(`VLOOKUP content for header "${header}" displayed successfully.`);
+        }).catch((error) => {
+            console.error("Error fetching VLOOKUP data:", error);
+            createNotification("Error loading VLOOKUP content. Please try again.");
         });
-        tableBody.appendChild(tr);
-    });
+    } catch (error) {
+        console.error("Error displaying VLOOKUP content:", error);
+        createNotification("Error loading VLOOKUP content. Please try again.");
+    }
 }
 
 // Initialize the Vlookup section when clicked in the navigation menu
@@ -367,14 +533,19 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 // Check if the clicked section is "vlookup"
                 if (sectionId === 'vlookup' && !isVlookupInitialized) {
-                    // Load headers into OutputFrame
-                    await loadOutputFrameHeaders();
+                    // Load example file into OutputFrame (replace with actual file loading logic)
+                    await loadVlookupsFromServer();
 
                     // Populate the dropdown with OutputFrame headers
                     populateVlookupDropdown();
 
                     // Mark the Vlookup section as initialized
                     isVlookupInitialized = true;
+                }
+
+                // Always update the active Vlookups list when the Vlookup section is activated
+                if (sectionId === 'vlookup') {
+                    updateActiveVlookupsList();
                 }
             });
         });
@@ -383,6 +554,29 @@ document.addEventListener('DOMContentLoaded', async () => {
         createNotification("Error loading headers for Vlookup.");
     }
 });
+
+// Function to load VLOOKUPs from the server
+async function loadVlookupsFromServer() {
+    try {
+        const response = await fetch('/api/load-data-VlookupManager');
+        if (!response.ok) {
+            throw new Error(`Failed to load VLOOKUP data: ${response.status}`);
+        }
+        const data = await response.json();
+
+        // Add loaded VLOOKUPs to the vlookupManager
+        Object.keys(data).forEach((header) => {
+            vlookupManager.addVlookup(header, data[header]);
+        });
+
+        console.log("VLOOKUPs loaded from server successfully.");
+    } catch (error) {
+        console.error("Error loading VLOOKUPs from server:", error);
+        createNotification("Error loading VLOOKUPs. Please try again.");
+    }
+}
+
+
 
 // Function to load OutputFrame headers
 async function loadOutputFrameHeaders() {

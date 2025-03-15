@@ -434,13 +434,13 @@ th {
 .active-vlookups ul {
     list-style-type: none;
     padding: 0;
-    color: #000;
+    color: #ffffff;
 }
 
 .active-vlookups li {
     padding: 5px 0;
     cursor: pointer;
-    color: #000;
+    color: #ffffff;
 }
 
 .active-vlookups li:hover {
@@ -451,7 +451,7 @@ th {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
-    color: #000;
+    color: #ffffff;
 }
 
 #vlookupContentTable th,
@@ -459,7 +459,7 @@ th {
     border: 1px solid #ddd;
     padding: 10px;
     text-align: left;
-    color: #000;
+    color: #ffffff;
 }
 
 #vlookupContentTable th {
@@ -490,4 +490,40 @@ th {
 .btn-add-vlookup-import:hover,
 .btn-add-vlookup:hover {
     background-color: var(--gray-medium);
+}
+
+.file-name-text {
+    
+    margin-top: 5px;
+    font-size: 0.9em;
+    color: var(--accent-color);
+    font-style: italic;
+}
+
+/* Style for table headers */
+#vlookupTable thead th {
+    background-color: #4CAF50; /* Green background for headers */
+    color: white; /* White text for headers */
+    text-align: left;
+    padding: 8px;
+}
+
+/* Style for table body content */
+#vlookupTable tbody td {
+    background-color: black; /* Black background for table body */
+    color: white; /* White text for table body content */
+    padding: 8px;
+    border: 1px solid #ddd; /* Optional: Add borders for better readability */
+}
+
+/* Hover effect for table rows */
+#vlookupTable tbody tr:hover {
+    background-color: #333; /* Darker background on hover */
+}
+
+/* General table styling */
+#vlookupTable {
+    width: 100%; /* Full-width table */
+    border-collapse: collapse; /* Remove gaps between cells */
+    margin-top: 20px; /* Add spacing above the table */
 }
