@@ -376,6 +376,7 @@ th {
     white-space: nowrap; /* Prevent text wrapping */
     overflow: hidden; /* Handle overflow gracefully */
     text-overflow: ellipsis; /* Add ellipsis for long text */
+    color: var(--accent-color);
 }
 
 .mapping-table th {
@@ -391,6 +392,7 @@ th {
     border: 1px solid #ccc;
     border-radius: 4px;
     background-color: white;
+    color: var(--accent-color);
     cursor: pointer;
 }
 
@@ -421,7 +423,8 @@ th {
     font-size: 14px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    color: #000;
+    color: var(--accent-color);
+    background-color: var(--accent-color);
 }
 
 .btn-add-vlookup {
