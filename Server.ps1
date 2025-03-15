@@ -86,6 +86,67 @@ while ($true) {
         [System.Text.Encoding]::UTF8.GetBytes("{'status': 'success'}") | ForEach-Object { $response.OutputStream.Write($_, 0, $_.Length) }
     }
 
+        # API: Delete VLOOKUP Data by Key
+    # API: Delete VLOOKUP Data by Key (Key in Request Body)
+    elseif ($request.HttpMethod -eq "DELETE" -and $path -eq "api/delete-vlookup") {
+        try {
+            # Read the incoming JSON data from the request body
+            $reader = New-Object System.IO.StreamReader($request.InputStream)
+            $jsonData = $reader.ReadToEnd()
+            $reader.Close()
+
+            # Parse the JSON payload
+            $payload = ConvertFrom-Json $jsonData
+
+            # Extract the key from the payload
+            $key = $payload.key
+
+            if (-not $key) {
+                throw "Key not provided in the request body."
+            }
+
+            Write-Host "Deleting VLOOKUP with key: $key"
+
+            # Path to the VLOOKUP JSON file
+            $filePath = "$dataDir\Vlookups.json"
+
+            # Check if the file exists
+            if (-not (Test-Path $filePath)) {
+                throw "VLOOKUP data file not found."
+            }
+
+            # Load the existing VLOOKUP data
+            $existingDataJson = Get-Content -Path $filePath -Raw
+            $data = ConvertFrom-Json $existingDataJson
+
+            # Check if the key exists in the data
+            if ($data.PSObject.Properties.Name -contains $key) {
+                # Remove the key-value pair from the data
+                $data.PSObject.Properties.Remove($key)
+
+                # Save the updated data back to the file
+                $updatedDataJson = ConvertTo-Json $data -Depth 10
+                Set-Content -Path $filePath -Value $updatedDataJson -Encoding utf8
+
+                Write-Host "Deleted VLOOKUP with key: $key"
+
+                # Respond with success status
+                $response.StatusCode = 200
+                [System.Text.Encoding]::UTF8.GetBytes("{'status': 'success', 'message': 'VLOOKUP deleted successfully.'}") | ForEach-Object { $response.OutputStream.Write($_, 0, $_.Length) }
+            } else {
+                # Respond with error if the key is not found
+                $response.StatusCode = 404
+                [System.Text.Encoding]::UTF8.GetBytes("{'status': 'error', 'message': 'VLOOKUP with key `$key` not found.'}") | ForEach-Object { $response.OutputStream.Write($_, 0, $_.Length) }
+            }
+        } catch {
+            # Handle errors
+            $errorMessage = $_.Exception.Message
+            Write-Host "Error deleting VLOOKUP: $errorMessage"
+            $response.StatusCode = 500
+            [System.Text.Encoding]::UTF8.GetBytes("{'status': 'error', 'message': '$errorMessage'}") | ForEach-Object { $response.OutputStream.Write($_, 0, $_.Length) }
+        }
+    }
+
     # API: Save JSON Data for VlookupManager
     elseif ($request.HttpMethod -eq "POST" -and $path -eq "api/save-data-VlookupManager") {
     # Read the incoming JSON data
@@ -211,10 +272,19 @@ while ($true) {
     }
 
     # Default fallback: Redirect to index.html
+    # Default fallback: Redirect to index.html
     else {
-        $redirectUrl = "http://localhost:$port/index.html"
-        $response.Headers.Set("Location", $redirectUrl)
-        $response.StatusCode = 302  # Temporary redirect
+        # Check if the request is for an API endpoint
+        if ($path -like "api/*") {
+            # Respond with 404 for unmatched API requests
+            $response.StatusCode = 404
+            [System.Text.Encoding]::UTF8.GetBytes("{'status': 'error', 'message': 'API endpoint not found'}") | ForEach-Object { $response.OutputStream.Write($_, 0, $_.Length) }
+        } else {
+            # Redirect non-API requests to index.html
+            $redirectUrl = "http://localhost:$port/index.html"
+            $response.Headers.Set("Location", $redirectUrl)
+            $response.StatusCode = 302  # Temporary redirect
+        }
         $response.OutputStream.Close()
         continue
     }

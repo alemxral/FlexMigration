@@ -126,6 +126,7 @@ export default class VlookupManager {
     getAllVlookups() {
         return this.vlookups;
     }
+    
 
     /**
      * Remove a Vlookup by its header.

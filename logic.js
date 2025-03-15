@@ -433,8 +433,6 @@ document.getElementById('addVlookupButton')?.addEventListener('click', async () 
 });
 
 
-
-
 async function updateActiveVlookupsList() {
     const list = document.getElementById('activeVlookupsList');
     if (!list) return;
@@ -450,11 +448,35 @@ async function updateActiveVlookupsList() {
 
         // Populate the list with the fetched data
         Object.keys(vlookups).forEach((header) => {
+            // Create a container for the VLOOKUP item
             const listItem = document.createElement('li');
-            listItem.textContent = `Vlookup for ${header}`;
-            listItem.addEventListener('click', () => {
+            listItem.className = 'vlookup-item'; // Optional: Add a class for styling
+
+            // Create the text for the VLOOKUP item
+            const itemText = document.createElement('span');
+            itemText.textContent = `Vlookup for ${header}`;
+            itemText.style.cursor = 'pointer'; // Make the text clickable
+            itemText.addEventListener('click', () => {
                 displayVlookupContent(header);
             });
+
+            // Create the delete icon/button
+            const deleteIcon = document.createElement('i');
+            deleteIcon.className = 'fas fa-trash-alt delete-icon'; // Use FontAwesome trash icon
+            deleteIcon.title = 'Delete VLOOKUP';
+            deleteIcon.style.marginLeft = '10px'; // Add spacing between text and icon
+            deleteIcon.style.color = 'white'; // Make the icon red for emphasis
+            deleteIcon.style.cursor = 'pointer'; // Change cursor to pointer on hover
+            deleteIcon.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent triggering the parent click event
+                deleteVlookup(header); // Call the delete function
+            });
+
+            // Append the text and delete icon to the list item
+            listItem.appendChild(itemText);
+            listItem.appendChild(deleteIcon);
+
+            // Append the list item to the list
             list.appendChild(listItem);
         });
     } catch (error) {
@@ -462,6 +484,40 @@ async function updateActiveVlookupsList() {
         createNotification("Error loading active VLOOKUPs. Please try again.");
     } finally {
         hidePreloader(); // Hide preloader after operation completes
+    }
+}
+
+async function deleteVlookup(header) {
+    try {
+        showPreloader(); // Show preloader
+
+        // Send a DELETE request with the key in the request body
+        const response = await fetch('/api/delete-vlookup', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ key: header }), // Include the key in the request body
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Failed to delete VLOOKUP.");
+        }
+
+        // Remove the VLOOKUP locally
+        vlookupManager.removeVlookup(header);
+
+        // Update the UI
+        updateActiveVlookupsList();
+
+        console.log(`VLOOKUP for header "${header}" deleted successfully.`);
+        createNotification(`VLOOKUP for header "${header}" deleted successfully.`);
+    } catch (error) {
+        console.error("Error deleting VLOOKUP:", error);
+        createNotification("Error deleting VLOOKUP. Please try again.");
+    } finally {
+        hidePreloader(); // Hide preloader
     }
 }
 

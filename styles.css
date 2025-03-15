@@ -8,6 +8,7 @@
     --gray-medium: #777;
     --gray-dark: #222;
     --border-color: #444;
+    --red:rgba(232, 23, 23);
 }
 
 /* General Reset */
@@ -651,4 +652,19 @@ th {
     pointer-events: none; /* Disable interactions while blurred */
     opacity: 0.5; /* Reduce opacity for a darker look */
     transition: all 0.3s ease; /* Smooth transition for the blur effect */
+}
+
+/* Style for the delete icon */
+/* Base style for the delete icon */
+.delete-icon {
+    margin-left: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: transform 0.2s ease, color 0.2s ease; /* Smooth transitions for scaling and color change */
+}
+
+/* Hover effect for the delete icon */
+.delete-icon:hover {
+    
+    transform: scale(1.2); /* Scale the icon to 1.2 times its original size */
 }
