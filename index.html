@@ -51,15 +51,17 @@
             </div>
             <ul class="nav-items">
                 <li class="nav-item" data-section="input">
+                    
                     <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                     Input
                 </li>
                 <li class="nav-item" data-section="output">
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path d="M3 15v4a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4M17 10l-5 5-5-5M12 15V3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
+                    <svg class="icon w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 15v2a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-2M12 4v12m0-12 4 4m-4-4L8 8"/>
+                      </svg>
+                      
                     Output
                 </li>
                 <li class="nav-item" data-section="mapping">
@@ -69,15 +71,17 @@
                     I/O Mapping
                 </li>
                 <li class="nav-item" data-section="vlookup">
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path d="M8 7h12M8 12h12M8 17h12M4 7h0M4 12h0M4 17h0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    <svg class="icon" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                        <path d="M8 3a3 3 0 0 0-1 5.83v6.34a3.001 3.001 0 1 0 2 0V15a2 2 0 0 1 2-2h1a5.002 5.002 0 0 0 4.927-4.146A3.001 3.001 0 0 0 16 3a3 3 0 0 0-1.105 5.79A3.001 3.001 0 0 1 12 11h-1c-.729 0-1.412.195-2 .535V8.83A3.001 3.001 0 0 0 8 3Z"/>
                     </svg>
+                    
                     Vlookup
                 </li>
                 <li class="nav-item" data-section="defaultfields">
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
+                    <svg class="icon w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M4 6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h11.613a2 2 0 0 0 1.346-.52l4.4-4a2 2 0 0 0 0-2.96l-4.4-4A2 2 0 0 0 15.613 6H4Z"/>
+                      </svg>
+                      
                     Default Fields
                 </li>
                 <li class="nav-item" data-section="flexrules">
@@ -87,17 +91,93 @@
                     FlexRules
                 </li>
                 <li class="nav-item" data-section="options">
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                        <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
+
+                        <svg class="icon" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                            <path fill-rule="evenodd" d="M9.586 2.586A2 2 0 0 1 11 2h2a2 2 0 0 1 2 2v.089l.473.196.063-.063a2.002 2.002 0 0 1 2.828 0l1.414 1.414a2 2 0 0 1 0 2.827l-.063.064.196.473H20a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-.089l-.196.473.063.063a2.002 2.002 0 0 1 0 2.828l-1.414 1.414a2 2 0 0 1-2.828 0l-.063-.063-.473.196V20a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2v-.089l-.473-.196-.063.063a2.002 2.002 0 0 1-2.828 0l-1.414-1.414a2 2 0 0 1 0-2.827l.063-.064L4.089 15H4a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h.09l.195-.473-.063-.063a2 2 0 0 1 0-2.828l1.414-1.414a2 2 0 0 1 2.827 0l.064.063L9 4.089V4a2 2 0 0 1 .586-1.414ZM8 12a4 4 0 1 1 8 0 4 4 0 0 1-8 0Z" clip-rule="evenodd"/>
+                        </svg>
                     Options
                 </li>
+                <li class="nav-item" data-section="doc">
+
+                    <svg class="icon w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        <path fill-rule="evenodd" d="M11 4.717c-2.286-.58-4.16-.756-7.045-.71A1.99 1.99 0 0 0 2 6v11c0 1.133.934 2.022 2.044 2.007 2.759-.038 4.5.16 6.956.791V4.717Zm2 15.081c2.456-.631 4.198-.829 6.956-.791A2.013 2.013 0 0 0 22 16.999V6a1.99 1.99 0 0 0-1.955-1.993c-2.885-.046-4.76.13-7.045.71v15.081Z" clip-rule="evenodd"/>
+                      </svg>
+                      
+                Documentation
+            </li>
             </ul>
         </nav>
 
         <!-- Main Content -->
         <main>
+            <div id="doc-wrapper" class="section-wrapper">
+                <h2>Project Documentation</h2>
+                
+                <!-- Overview -->
+                <div class="doc-section">
+                    <h3>Overview</h3>
+                    <p>
+                        The FlexMigration Tool is designed to streamline data migration processes by providing intuitive interfaces for input, output, mapping, and rule-based transformations. 
+                        It supports Excel file imports/exports, field mappings, VLOOKUP functionality, and custom rules for data validation and transformation.
+                    </p>
+                </div>
+            
+                <!-- Features -->
+                <div class="doc-section">
+                    <h3>Key Features</h3>
+                    <ul>
+                        <li><strong>Input Section:</strong> Upload and preview Excel files with support for multiple formats.</li>
+                        <li><strong>Output Section:</strong> Export processed data into Excel, CSV, or JSON formats.</li>
+                        <li><strong>Mapping Section:</strong> Map fields between source and target datasets using drag-and-drop or dropdowns.</li>
+                        <li><strong>VLOOKUP Section:</strong> Perform lookups across datasets for dynamic data enrichment.</li>
+                        <li><strong>FlexRules Section:</strong> Define custom rules for data validation and transformation.</li>
+                        <li><strong>Options Section:</strong> Configure settings such as date formats, error handling, and notifications.</li>
+                    </ul>
+                </div>
+            
+                <!-- Usage Instructions -->
+                <div class="doc-section">
+                    <h3>How to Use</h3>
+                    <ol>
+                        <li>
+                            <strong>Upload Data:</strong> Go to the "Input" section and upload your Excel file. Preview the data to ensure it's correctly loaded.
+                        </li>
+                        <li>
+                            <strong>Map Fields:</strong> Navigate to the "Mapping" section and map source fields to target fields using the dropdown menus.
+                        </li>
+                        <li>
+                            <strong>Apply Rules:</strong> In the "FlexRules" section, define custom rules for data validation or transformation.
+                        </li>
+                        <li>
+                            <strong>Perform Lookups:</strong> Use the "VLOOKUP" section to enrich your dataset by pulling in additional information from other sources.
+                        </li>
+                        <li>
+                            <strong>Export Results:</strong> Head to the "Output" section to export the processed data in your desired format (Excel, CSV, or JSON).
+                        </li>
+                    </ol>
+                </div>
+            
+                <!-- Troubleshooting -->
+                <div class="doc-section">
+                    <h3>Troubleshooting</h3>
+                    <p>
+                        If you encounter any issues while using the tool, try the following:
+                    </p>
+                    <ul>
+                        <li>Ensure that the uploaded file is in a supported format (e.g., .xlsx, .csv).</li>
+                        <li>Check the browser console for any errors and report them to the development team.</li>
+                        <li>Clear your browser cache and reload the page if the interface behaves unexpectedly.</li>
+                    </ul>
+                </div>
+            
+                <!-- Support -->
+                <div class="doc-section">
+                    <h3>Support</h3>
+                    <p>
+                        For further assistance or to report bugs, please contact our support team at <a href="mailto:support@flexmigration.com">alejandro.moral@arendtservices.com</a>.
+                    </p>
+                </div>
+            </div>
             <!-- Wrappers for Each Section -->
             <div id="input-wrapper" class="section-wrapper">
                 <h2>Input Section</h2>

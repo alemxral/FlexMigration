@@ -1250,3 +1250,107 @@ h1 {
     font-family: 'Space Mono', monospace;
     color: white; 
   }
+
+
+  /* Define Global Color Variables */
+:root {
+    /* Primary Colors */
+    --primary-color: #007382; /* Cyan Blue */
+    --secondary-color: #007382; /* Darker Cyan Blue */
+
+
+
+    /* Text Colors */
+    --text-primary: #ffffff; /* White Text for Headings */
+    --text-secondary: #d4d4d4; /* Light Gray Text for Paragraphs */
+
+
+    /* Border and Divider Colors */
+    --border-color: #444; /* Subtle Gray for Borders */
+
+    /* Error/Notification Colors */
+    --error-color: #ff5252; /* Red for Errors */
+    --success-color: #4caf50; /* Green for Success Messages */
+}
+
+/* General Section Styling */
+#doc-wrapper {
+    padding: 20px;
+    background-color: var(--bg-primary); /* Use variable for dark background */
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    color: var(--text-primary); /* Use variable for white text */
+}
+
+.doc-section {
+    margin-bottom: 25px;
+}
+
+.doc-section h3 {
+    margin-top: 0;
+    color: var(--primary-color); /* Use variable for cyan blue headings */
+    font-size: 1.6rem;
+    font-weight: 600;
+    border-bottom: 2px solid var(--primary-color); /* Matching border color */
+    padding-bottom: 8px;
+}
+
+.doc-section p,
+.doc-section ul,
+.doc-section ol {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--text-secondary); /* Use variable for light gray text */
+}
+
+.doc-section ul,
+.doc-section ol {
+    margin-left: 20px;
+    list-style-type: square;
+    list-style-position: inside;
+}
+
+.doc-section a {
+    color: var(--primary-color); /* Use variable for cyan blue links */
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.doc-section a:hover {
+    color: var(--secondary-color); /* Use variable for darker cyan blue on hover */
+    text-decoration: underline;
+}
+
+.doc-section blockquote {
+    margin: 10px 0;
+    padding-left: 15px;
+    border-left: 4px solid var(--primary-color); /* Highlight important notes */
+    color: var(--text-accent); /* Use variable for lighter gray quotes */
+    font-style: italic;
+}
+
+.doc-section code {
+    background-color: var(--bg-secondary); /* Use variable for darker background */
+    color: #569cd6; /* Blue for code syntax */
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: "Courier New", monospace;
+    font-size: 0.9rem;
+}
+
+.doc-section pre {
+    background-color: var(--bg-secondary); /* Use variable for darker background */
+    color: var(--text-primary); /* Use variable for white text */
+    padding: 15px;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-family: "Courier New", monospace;
+    font-size: 0.9rem;
+    margin: 10px 0;
+}
+
+.doc-section hr {
+    border: none;
+    border-top: 1px solid var(--border-color); /* Use variable for subtle divider */
+    margin: 20px 0;
+}
