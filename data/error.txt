@@ -20,3 +20,4 @@ Raw Request Body: {"key":"Name"}
 Raw Request Body: {"key":"Name"}
 Raw Request Body: {"key":"Name"}
 Raw Request Body: {"key":"worldrank"}
+Raw Request Body: {"key":"student"}

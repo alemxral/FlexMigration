@@ -9,9 +9,9 @@ import {
     activeVlookups, 
     Vlookup as VlookupClass, // Rename the Vlookup class to avoid conflicts
     vlookupManager,
-    defaultFieldsFile // Use the renamed instance from instances.js
+
 } from "./instances.js";
-import { renderTable, createNotification,createDropdown,createSearchableDropdown } from "./utils.js";
+import { renderTable, createNotification } from "./utils.js";
 import { refreshAndActivateTab } from "./script.js";
 
 console.log("InputFrame and OutputFrame loaded successfully!");

@@ -4,17 +4,17 @@ import OutputFrame from "./OutputFrame.js";
 import Mapping from "./Mapping.js";
 import Vlookup from "./Vlookup.js";
 import VlookupManager from "./VlookupManager.js"; // Imported class
-import { DefaultFieldsFile } from "./DefaultFieldsFile.js";
+
 
 // Initialize global instances
 const inputFrame = new InputFrame();
 const vlookupManager = new VlookupManager(); // Renamed variable to avoid conflict
 const outputFrame = new OutputFrame();
 const mapping = new Mapping();
-const defaultFieldsFile = new DefaultFieldsFile();
+
 let activeVlookups = {};
 
 console.log("Instances initialized successfully!");
 
 // Export the instances for use in other files
-export { inputFrame, outputFrame, mapping, activeVlookups, Vlookup, vlookupManager, defaultFieldsFile };
+export { inputFrame, outputFrame, mapping, activeVlookups, Vlookup, vlookupManager };
