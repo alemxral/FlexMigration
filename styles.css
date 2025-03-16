@@ -49,6 +49,9 @@ body {
     margin-bottom: 20px;
 }
 
+
+
+
 .nav-items {
     list-style: none;
 }
@@ -1242,3 +1245,8 @@ select:focus {
 .searchable-dropdown ul li:hover {
     background-color: var(--hover-bg);
 }
+
+h1 {
+    font-family: 'Space Mono', monospace;
+    color: white; 
+  }

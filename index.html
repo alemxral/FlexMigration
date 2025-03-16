@@ -47,7 +47,7 @@
         <!-- Sidebar -->
         <nav class="sidebar">
             <div class="sidebar-header">
-                <h1>Flex Migration</h1>
+                <h1 class="flextitle">FlexMigration</h1>
             </div>
             <ul class="nav-items">
                 <li class="nav-item" data-section="input">
@@ -246,9 +246,8 @@
                 <div class="file-upload-container">
                     <label for="excelFileUpload">Upload Excel File:</label>
                     <input type="file" id="excelFileUpload" accept=".xlsx, .xls" />
-                    <button id="saveToJsonButton" class="primary">Save to JSON</button>
-                    <button id="loadFromJsonButton" class="secondary">Load from JSON</button>
-                </div>
+                    <button id="saveToJsonButton" class="primary">Save Excek</button>
+                    <button id="loadFromJsonButton" class="secondary" style="display: none;">Load from JSON</button>                </div>
             
                 <!-- Table -->
                 <table id="defaultFieldsTable" class="default-fields-table">
@@ -384,8 +383,8 @@
                 <textarea id="ruleDescription" name="ruleDescription" placeholder="Describe the rule" rows="3" required></textarea>
             </div>
             <div class="form-actions">
-                <button type="submit" class="primary">Save Rule</button>
-                <button type="button" class="secondary close-modal">Cancel</button>
+                <button id="saveRulesButton" type="submit" class="primary save-rules-button">Save Rule</button>
+                <button  type="button" class="secondary close-modal">Cancel</button>
             </div>
         </form>
     </div>
@@ -398,6 +397,6 @@
         <script type="module" src="logic.js"></script>
         <script type="module" src="utils.js"></script>
         <script type="module" src="DefaultFieldsFile.js"></script>
-        
+        <script type="module" src="FlexRules.js"></script>        
 </body>
 </html>

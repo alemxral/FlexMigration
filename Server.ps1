@@ -238,6 +238,79 @@ while ($true) {
         }
     }
 
+ # API: Save User-Defined Rules
+    elseif ($request.HttpMethod -eq "POST" -and $path -eq "api/save-user-defined-rules") {
+        $reader = New-Object System.IO.StreamReader($request.InputStream)
+        $jsonData = $reader.ReadToEnd()
+        $reader.Close()
+
+        # Parse the JSON data
+        $data = ConvertFrom-Json $jsonData
+        $filePath = "$dataDir\UserDefinedRules.json"
+
+        # Save the JSON data to the file
+        $jsonData | Set-Content -Path $filePath -Encoding utf8
+        Write-Host "Saved user-defined rules to $filePath"
+
+        # Respond with success
+        $response.StatusCode = 200
+        [System.Text.Encoding]::UTF8.GetBytes("{'status': 'success'}") | ForEach-Object { $response.OutputStream.Write($_, 0, $_.Length) }
+    }
+
+    # API: Load User-Defined Rules
+    elseif ($request.HttpMethod -eq "GET" -and $path -eq "api/load-user-defined-rules") {
+        $filePath = "$dataDir\UserDefinedRules.json"
+
+        # Check if the file exists
+        if (Test-Path $filePath) {
+            $jsonData = Get-Content -Path $filePath -Raw -Encoding utf8
+            Write-Host "Loaded user-defined rules from $filePath"
+        } else {
+            $jsonData = "[]"
+            Write-Host "No user-defined rules file found. Returning empty list."
+        }
+
+        # Respond with the JSON data
+        $response.StatusCode = 200
+        [System.Text.Encoding]::UTF8.GetBytes($jsonData) | ForEach-Object { $response.OutputStream.Write($_, 0, $_.Length) }
+    }
+
+    # API: Save Default Rules
+    elseif ($request.HttpMethod -eq "POST" -and $path -eq "api/save-default-rules") {
+        $reader = New-Object System.IO.StreamReader($request.InputStream)
+        $jsonData = $reader.ReadToEnd()
+        $reader.Close()
+
+        # Parse the JSON data
+        $data = ConvertFrom-Json $jsonData
+        $filePath = "$dataDir\DefaultRules.json"
+
+        # Save the JSON data to the file
+        $jsonData | Set-Content -Path $filePath -Encoding utf8
+        Write-Host "Saved default rules to $filePath"
+
+        # Respond with success
+        $response.StatusCode = 200
+        [System.Text.Encoding]::UTF8.GetBytes("{'status': 'success'}") | ForEach-Object { $response.OutputStream.Write($_, 0, $_.Length) }
+    }
+
+    # API: Load Default Rules
+    elseif ($request.HttpMethod -eq "GET" -and $path -eq "api/load-default-rules") {
+        $filePath = "$dataDir\DefaultRules.json"
+
+        # Check if the file exists
+        if (Test-Path $filePath) {
+            $jsonData = Get-Content -Path $filePath -Raw -Encoding utf8
+            Write-Host "Loaded default rules from $filePath"
+        } else {
+            $jsonData = "[]"
+            Write-Host "No default rules file found. Returning empty list."
+        }
+
+        # Respond with the JSON data
+        $response.StatusCode = 200
+        [System.Text.Encoding]::UTF8.GetBytes($jsonData) | ForEach-Object { $response.OutputStream.Write($_, 0, $_.Length) }
+    }
     # API: Save JSON Data for InputFrame
     elseif ($request.HttpMethod -eq "POST" -and $path -eq "api/save-data-InputFrame") {
         $reader = New-Object System.IO.StreamReader($request.InputStream)

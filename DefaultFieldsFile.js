@@ -59,9 +59,9 @@ class DefaultFieldsFile {
 
             // Convert JSON data into a matrix (array of arrays)
             this.data = Object.keys(rawData).map((header) => [header, ...rawData[header]]);
-            console.log("DefaultFieldsFile Data Loaded:", this.data);
+            // console.log("DefaultFieldsFile Data Loaded:", this.data);
         } catch (error) {
-            console.error("Error loading DefaultFieldsFile.json:", error);
+            // console.error("Error loading DefaultFieldsFile.json:", error);
             throw new Error("Error loading DefaultFieldsFile.json. Please check the server.");
         }
     }
@@ -74,7 +74,7 @@ class DefaultFieldsFile {
                 throw new Error(`Failed to load DefaultFields.json: ${response.status}`);
             }
             const mappings = await response.json();
-            console.log("DefaultFields Mappings Loaded:", mappings);
+            // console.log("DefaultFields Mappings Loaded:", mappings);
 
             // Store mappings in the class
             this.mappings = mappings;
@@ -93,7 +93,7 @@ class DefaultFieldsFile {
 
         // Extract headers from the first column of the matrix
         this.headers = this.data.map(row => row[0]);
-        console.log("Headers Extracted:", this.headers);
+        // console.log("Headers Extracted:", this.headers);
     }
     // Collect data from the table
     collectTableData() {
@@ -202,7 +202,7 @@ class DefaultFieldsFile {
         let tableRows = document.querySelectorAll('#defaultFieldsTableBody tr');
 
         // Debugging: Log the number of rows found in the table
-        console.log(`Number of rows found in #defaultFieldsTableBody: ${tableRows.length}`);
+        // console.log(`Number of rows found in #defaultFieldsTableBody: ${tableRows.length}`);
 
         // If no rows are found, dynamically generate 20 rows based on headers
         if (tableRows.length === 0) {
@@ -239,22 +239,22 @@ class DefaultFieldsFile {
 
             // Re-fetch rows after generating them
             tableRows = document.querySelectorAll('#defaultFieldsTableBody tr');
-            console.log(`Generated ${tableRows.length} rows dynamically.`);
+            // console.log(`Generated ${tableRows.length} rows dynamically.`);
         }
 
         // Loop through each row in the table
         tableRows.forEach((row, index) => {
             // Debugging: Log the current row being processed
-            console.log(`Processing row ${index + 1}:`, row);
+            // console.log(`Processing row ${index + 1}:`, row);
 
             // Get references to the header dropdown and value input fields
             const headerDropdown = row.querySelector('td:nth-child(1) select');
             const valueInput = row.querySelector('td:nth-child(2) input');
 
             // Debugging: Log whether the elements were found
-            console.log(
-                `Row ${index + 1}: Header Dropdown = ${headerDropdown ? "Found" : "Not Found"}, Value Input = ${valueInput ? "Found" : "Not Found"}`
-            );
+            // console.log(
+            //     `Row ${index + 1}: Header Dropdown = ${headerDropdown ? "Found" : "Not Found"}, Value Input = ${valueInput ? "Found" : "Not Found"}`
+            // );
 
             // Ensure both elements exist
             if (!headerDropdown || !valueInput) {
@@ -269,7 +269,7 @@ class DefaultFieldsFile {
             const normalizedHeader = selectedHeader.trim().toLowerCase();
 
             // Debugging: Log the selected header for each row
-            console.log(`Processing row ${index + 1}: Selected Header = "${selectedHeader}"`);
+            // console.log(`Processing row ${index + 1}: Selected Header = "${selectedHeader}"`);
 
             // Find a matching mapping in the mappings array using flexible matching
             const match = mappings.find((item) => {
@@ -278,20 +278,20 @@ class DefaultFieldsFile {
                 const isValidValue = item.value !== '';
 
                 // Debugging: Log the comparison details for each mapping
-                console.log(
-                    `Comparing "${normalizedHeader}" with "${mappingHeader}": Partial Match = ${isPartialMatch}, Valid Value = ${isValidValue}`
-                );
+                // console.log(
+                //     `Comparing "${normalizedHeader}" with "${mappingHeader}": Partial Match = ${isPartialMatch}, Valid Value = ${isValidValue}`
+                // );
 
                 return isPartialMatch && isValidValue;
             });
 
             if (match) {
                 // If a match is found, populate the value input field
-                console.log(`Match found for header: ${selectedHeader}, value: ${match.value}`);
+                // console.log(`Match found for header: ${selectedHeader}, value: ${match.value}`);
                 valueInput.value = match.value; // Set the value in the second column
             } else {
                 // If no match is found, log a warning
-                console.warn(`No match found for header: ${selectedHeader}`);
+                // console.warn(`No match found for header: ${selectedHeader}`);
             }
         });
 

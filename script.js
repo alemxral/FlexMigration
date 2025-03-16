@@ -19,6 +19,62 @@ let dataTableInstance = null;
 const navItems = document.querySelectorAll('.nav-item');
 const sectionWrappers = document.querySelectorAll('.section-wrapper');
 
+
+// Define the letters for randomization
+const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+let interval = null;
+
+// Function to apply the hover effect
+function applyHoverEffect(element) {
+    let iteration = 0;
+
+    clearInterval(interval);
+
+    interval = setInterval(() => {
+        element.innerText = element.innerText
+            .split("")
+            .map((letter, index) => {
+                if (index < iteration) {
+                    return element.dataset.value[index];
+                }
+                return letters[Math.floor(Math.random() * 26)];
+            })
+            .join("");
+
+        if (iteration >= element.dataset.value.length) {
+            clearInterval(interval);
+        }
+
+        iteration += 1 / 3;
+    }, 30);
+}
+
+// Initialize the hover effect for the flextitle
+document.addEventListener("DOMContentLoaded", () => {
+    const flexTitle = document.querySelector(".flextitle");
+
+    if (flexTitle) {
+        // Set the data-value attribute to store the original text
+        flexTitle.dataset.value = flexTitle.innerText;
+
+        // Apply the hover effect on mouseover with a 1-second delay
+        flexTitle.onmouseover = (event) => {
+            setTimeout(() => {
+                applyHoverEffect(event.target);
+            }, 500); // 1-second delay
+        };
+
+        // Optionally, trigger the effect on page load with a 1-second delay
+        setTimeout(() => {
+            applyHoverEffect(flexTitle);
+        }, 1000); // 1-second delay
+    } else {
+        console.warn("Element with class 'flextitle' not found.");
+    }
+});
+
+
 // Function to activate a section wrapper
 function activateSection(sectionId) {
     // Remove 'active' class from all navigation items
