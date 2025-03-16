@@ -307,6 +307,47 @@ document.getElementById('excelFileUpload')?.addEventListener('change', async (ev
 });
 
 
+// Save Button - Save Default Fields Mapping to JSON via Server
+document.getElementById('saveDefaultFieldsButton')?.addEventListener('click', async () => {
+    try {
+        const tableRows = document.querySelectorAll('#defaultFieldsTableBody tr');
+        const defaultFieldsData = [];
+
+        // Collect data from the table
+        tableRows.forEach((row) => {
+            const header1 = row.querySelector('td:nth-child(1) select')?.value || '';
+            const value = row.querySelector('td:nth-child(2) input')?.value || '';
+
+            defaultFieldsData.push({
+                header1,
+                value,
+            });
+        });
+
+        console.log("Default Fields Data to Save:", defaultFieldsData);
+
+        // Send the data to the server
+        const response = await fetch('/api/save-data-DefaulFields', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(defaultFieldsData),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to save Default Fields data: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log("Default Fields data saved successfully:", result);
+        createNotification("Default Fields data saved successfully!");
+    } catch (error) {
+        console.error("Error saving Default Fields data:", error);
+        createNotification("Error saving Default Fields data. Please try again.");
+    }
+});
+
 
 // ==============================
 // Helper Functions
