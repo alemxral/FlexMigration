@@ -4,9 +4,6 @@
 
 import { createDropdown, createSearchableDropdown,createNotification,createDropdownWithEmpty } from "./utils.js";
 
-
-
-
 // DefaultFieldsFile Class
 export class DefaultFieldsFile {
     constructor() {
@@ -52,7 +49,6 @@ export class DefaultFieldsFile {
         }
     }
 
-    // Load data from the server
     async loadFromServer(apiEndpoint) {
         try {
             const response = await fetch(apiEndpoint);
@@ -60,7 +56,14 @@ export class DefaultFieldsFile {
                 throw new Error(`Failed to load Default Fields data: ${response.status}`);
             }
 
-            this.data = await response.json();
+            const loadedData = await response.json();
+
+            // Validate the structure of the loaded data
+            if (!loadedData || typeof loadedData !== 'object') {
+                throw new Error("Invalid data structure in loaded JSON.");
+            }
+
+            this.data = loadedData;
             this.headers = Object.keys(this.data); // Extract headers
             console.log("Default Fields data loaded from server:", this.data);
             return this.data;
@@ -186,6 +189,10 @@ export class DefaultFieldsFile {
     }
 }
 
+// ==============================
+// Event Listeners
+// ==============================
+
 // Initialize the DefaultFieldsFile instance
 const defaultFieldsFile = new DefaultFieldsFile();
 
@@ -200,8 +207,8 @@ document.getElementById('saveToJsonButton')?.addEventListener('click', async () 
     }
 });
 
-// Load Button - Load Default Fields from JSON via Server
-// Load Button - Load Default Fields from JSON via Server
+
+
 // Load Button - Load Default Fields from JSON via Server
 document.getElementById('loadFromJsonButton')?.addEventListener('click', async () => {
     try {
@@ -212,6 +219,14 @@ document.getElementById('loadFromJsonButton')?.addEventListener('click', async (
         }
         const defaultFieldsFileData = await response1.json();
         console.log("Default Fields File Data Loaded:", defaultFieldsFileData);
+
+        // Validate and extract headers using Object.keys
+        const headers = Object.keys(defaultFieldsFileData); // Extract headers dynamically
+        if (!headers || !Array.isArray(headers) || headers.length === 0) {
+            console.error("Error: Headers are missing or invalid in DefaultFieldsFile.json");
+            createNotification("Error loading headers. Please check the uploaded file.");
+            return;
+        }
 
         // Step 2: Fetch the pairs of values (header1 and value)
         const response2 = await fetch('/api/load-data-DefaulFields');
@@ -232,7 +247,7 @@ document.getElementById('loadFromJsonButton')?.addEventListener('click', async (
         if (!tableBody) {
             throw new Error("Table body element not found.");
         }
-        tableBody.innerHTML = '';
+        tableBody.innerHTML = ''; // Clear previous rows
 
         // Step 4: Populate the table with the loaded data
         defaultFieldsMappings.forEach((mapping, index) => {
@@ -240,8 +255,8 @@ document.getElementById('loadFromJsonButton')?.addEventListener('click', async (
 
             // Column 1: Header 1 (Dropdown)
             const header1Cell = document.createElement('td');
-            const header1Dropdown = createDropdownWithEmpty(defaultFieldsFileData.headers); // Use headers from DefaultFieldsFile.json
-            header1Dropdown.value = mapping.header1 || '';
+            const header1Dropdown = createDropdownWithEmpty(headers); // Use headers extracted from DefaultFieldsFile.json
+            header1Dropdown.value = mapping.header1 || ''; // Pre-select the value from the mapping
             header1Cell.appendChild(header1Dropdown);
             row.appendChild(header1Cell);
 
@@ -249,7 +264,7 @@ document.getElementById('loadFromJsonButton')?.addEventListener('click', async (
             const valuesCell = document.createElement('td');
             const valuesInput = document.createElement('input');
             valuesInput.type = 'text';
-            valuesInput.value = mapping.value || '';
+            valuesInput.value = mapping.value || ''; // Populate the input field with the corresponding value
             valuesCell.appendChild(valuesInput);
             row.appendChild(valuesCell);
 
@@ -291,6 +306,12 @@ document.getElementById('excelFileUpload')?.addEventListener('change', async (ev
     }
 });
 
+
+
+// ==============================
+// Helper Functions
+// ==============================
+
 // Helper function to parse Excel files
 async function parseExcelFile(file) {
     return new Promise((resolve, reject) => {
@@ -318,89 +339,3 @@ async function parseExcelFile(file) {
         reader.readAsArrayBuffer(file);
     });
 }
-
-// Save Button - Save Default Fields Mapping to JSON via Server
-document.getElementById('saveDefaultFieldsButton')?.addEventListener('click', async () => {
-    try {
-        const tableRows = document.querySelectorAll('#defaultFieldsTableBody tr');
-        const defaultFieldsData = [];
-
-        // Collect data from the table
-        tableRows.forEach((row) => {
-            const header1 = row.querySelector('td:nth-child(1) select')?.value || '';
-            const value = row.querySelector('td:nth-child(2) input')?.value || '';
-
-            defaultFieldsData.push({
-                header1,
-                value,
-            });
-        });
-
-        console.log("Default Fields Data to Save:", defaultFieldsData);
-
-        // Send the data to the server
-        const response = await fetch('/api/save-data-DefaulFields', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(defaultFieldsData),
-        });
-
-        if (!response.ok) {
-            throw new Error(`Failed to save Default Fields data: ${response.status}`);
-        }
-
-        const result = await response.json();
-        console.log("Default Fields data saved successfully:", result);
-        createNotification("Default Fields data saved successfully!");
-    } catch (error) {
-        console.error("Error saving Default Fields data:", error);
-        createNotification("Error saving Default Fields data. Please try again.");
-    }
-});
-
-// Load Button - Load Default Fields Mapping from JSON via Server
-document.getElementById('loadDefaultFieldsButton')?.addEventListener('click', async () => {
-    try {
-        // Fetch the saved data from the server
-        const response = await fetch('/api/load-data-DefaulFields');
-        if (!response.ok) {
-            throw new Error(`Failed to load Default Fields data: ${response.status}`);
-        }
-
-        const defaultFieldsData = await response.json();
-        console.log("Default Fields Data Loaded:", defaultFieldsData);
-
-        // Clear previous content
-        const tableBody = document.getElementById('defaultFieldsTableBody');
-        tableBody.innerHTML = '';
-
-        // Populate the table with the loaded data
-        defaultFieldsData.forEach((rowData) => {
-            const row = document.createElement('tr');
-
-            // Column 1: Header 1
-            const header1Cell = document.createElement('td');
-            const header1Dropdown = createDropdownWithEmpty(this.headers); // Replace with actual dropdown creation logic
-            header1Dropdown.value = rowData.header1 || '';
-            header1Cell.appendChild(header1Dropdown);
-            row.appendChild(header1Cell);
-
-            // Column 2: Values
-            const valuesCell = document.createElement('td');
-            const valuesInput = document.createElement('input');
-            valuesInput.type = 'text';
-            valuesInput.value = rowData.value || '';
-            valuesCell.appendChild(valuesInput);
-            row.appendChild(valuesCell);
-
-            tableBody.appendChild(row);
-        });
-
-        createNotification("Default Fields data loaded successfully!");
-    } catch (error) {
-        console.error("Error loading Default Fields data:", error);
-        createNotification("Error loading Default Fields data. Please try again.");
-    }
-});
