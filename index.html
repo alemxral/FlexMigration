@@ -285,22 +285,13 @@
                         <thead>
                             <tr>
                                 <th>Rule Name</th>
-                                <th>Description</th>
+                                <th>Code</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody id="userDefinedRulesBody">
                             <!-- Example Row -->
-                            <tr>
-                                <td>Email Validation</td>
-                                <td>Validates email format</td>
-                                <td><button class="delete-rule-button">Delete</button></td>
-                            </tr>
-                            <tr>
-                                <td>Salary Range</td>
-                                <td>Ensures salary is within range</td>
-                                <td><button class="delete-rule-button">Delete</button></td>
-                            </tr>
+
                         </tbody>
                     </table>
                 </div>
@@ -312,22 +303,13 @@
                         <thead>
                             <tr>
                                 <th>Rule Name</th>
-                                <th>Description</th>
+                                <th>Code</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody id="defaultRulesBody">
                             <!-- Example Row -->
-                            <tr>
-                                <td>Data Completeness</td>
-                                <td>Ensures all fields are filled</td>
-                                <td><button class="delete-rule-button" disabled>Delete</button></td>
-                            </tr>
-                            <tr>
-                                <td>Date Format</td>
-                                <td>Standardizes date formats</td>
-                                <td><button class="delete-rule-button" disabled>Delete</button></td>
-                            </tr>
+
                         </tbody>
                     </table>
                 </div>
@@ -379,7 +361,7 @@
                 <input type="text" id="ruleName" name="ruleName" placeholder="Enter rule name" required />
             </div>
             <div class="form-group">
-                <label for="ruleDescription">Description:</label>
+                <label for="ruleDescription">Code:</label>
                 <textarea id="ruleDescription" name="ruleDescription" placeholder="Describe the rule" rows="3" required></textarea>
             </div>
             <div class="form-actions">

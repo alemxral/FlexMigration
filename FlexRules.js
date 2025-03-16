@@ -74,7 +74,7 @@ class FlexRulesManager {
             createNotification("Rules saved successfully!");
         } catch (error) {
             console.error("Error saving rules:", error);
-            createNotification("Error saving rules. Please try again.");
+            // createNotification("Error saving rules. Please try again.");
         }
     }
 
@@ -145,7 +145,7 @@ class FlexRulesManager {
                 })
                 .catch((error) => {
                     console.error("Error saving user-defined rules:", error);
-                    createNotification("Error saving rules to the server. Please try again.");
+                    // createNotification("Error saving rules to the server. Please try again.");
                 });
         } else {
             console.warn("Rule not found in user-defined rules.");
@@ -180,12 +180,12 @@ class FlexRulesManager {
                 .catch((error) => {
                     console.error("Error saving user-defined rules:", error);
                     console.debug("Server response: Error occurred while saving rules.");
-                    createNotification("Error saving rules to the server. Please try again.");
+                    // createNotification("Error saving rules to the server. Please try again.");
                 });
         } catch (error) {
             console.error("Error adding new rule:", error);
             console.debug("An error occurred while processing the rule:", error);
-            createNotification("Error adding rule. Please try again.");
+            // createNotification("Error adding rule. Please try again.");
         }
     }
 }
