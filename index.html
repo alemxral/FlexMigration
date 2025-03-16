@@ -31,6 +31,9 @@
         crossorigin="anonymous"
       />
         <!-- DataTables JS -->
+        <script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
         <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
         <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
     
@@ -180,9 +183,11 @@
             </div>
             <!-- Wrappers for Each Section -->
             <div id="input-wrapper" class="section-wrapper">
-                <h2>Input Section</h2>
-            
-                <!-- Import Excel Button -->
+                <div class="content-box">
+                    <h2>Input Section</h2>
+                    <p><strong>Input Section</strong>: This section is used to import raw data from an Excel file for migration. Ensure the file includes headers to properly map the data fields during the migration process.</p>
+                </div>
+                    <!-- Import Excel Button -->
                 <div class="file-upload">
                     <label for="fileInput" class="file-label">Import Excel</label>
                     <input type="file" id="fileInput" accept=".xlsx, .xls" hidden>
@@ -208,8 +213,10 @@
 
 
             <div id="output-wrapper" class="section-wrapper">
-                <h2>Output Section</h2>
-            
+                <div class="content-box">
+                    <h2>Output Section</h2>
+                    <p><strong>Output Section</strong>: This section generates the final output after processing the input data through mappings, transformations, and lookups. The output is structured according to the target format and can be exported for further use.</p>
+                </div>
                 <!-- Generate Button -->
                 <button id="generateButton" class="generate-button">Generate Output</button>
             
@@ -259,9 +266,16 @@
                 </div>
             </div>
             <div id="mapping-wrapper" class="section-wrapper">
-                <h2>Mapping Section</h2>
-                <p>Create mappings between Input and Output headers.</p>
-            
+                <div class="content-box">
+                    <h2>Mapping Section</h2>
+                    <p><strong>I/O Mapping</strong>: The relationship between an input field and an output field, defined as \( M(F_{\text{in}}) = F_{\text{out}} \). Use it when there is a direct relationship of equivalence between fields of distinct frames.</p>
+                    
+                    <h3>Definitions:</h3>
+                    <p><strong>Frame</strong>: A structured dataset containing multiple fields (like a database table).</p>
+                    <p><strong>Field</strong>: A column in a dataset representing a specific attribute.</p>
+                    
+                    <p class="example">ie Direct Mapping: \( M(\text{Full\_Name}) = \text{Employee\_Name} \)</p>
+                </div>
                 <!-- Mapping Table -->
                 <div class="table-wrapper">
                     <h3>Header Mapping</h3>
@@ -282,8 +296,21 @@
                 </div>
             </div>
             <div id="vlookup-wrapper" class="section-wrapper">
-                <h2>Vlookup Section</h2>
-                <p>Create and manage Vlookups for InputFrame headers.</p>
+                <div class="content-box">
+                    <h2>Vlookups (V)</h2>
+                    <p><strong>Vlookups</strong>: A lookup operation that maps an entry from an external reference dataset \( R \) to populate a field:</p>
+                    
+                    <p class="math">\( V(E_i, R) = E_j' \)</p>
+                    
+                    <p>where:</p>
+                    <ul>
+                       <p>\( E_i \) is an entry in \( F_i \)</p> 
+                        <p>\( E_j' \) is retrieved from the reference dataset \( R \)</p>
+                    </ul>
+                    
+                    <p>Vlookups should be used to link entries of a field in your current dataset to corresponding entries in an external reference frame. This is particularly useful when you need to enrich or validate data by referencing an external source.</p>
+                    
+                </div>
             
                 <!-- Vlookup Creation -->
                 <div class="vlookup-creation">
@@ -320,7 +347,14 @@
                 </div>
             </div>
             <div id="defaultfields-wrapper" class="section-wrapper">
-                <h2>Default Fields Section</h2>
+                <div class="content-box">
+                    <h2>Default Fields Section</h2>
+                    <p><strong>Default Fields</strong>: This section is used to set default values for output fields when no specific mapping or transformation is provided.</p>
+
+                    <p>Default values are useful for fields whose values are static or fixed.</p>
+
+                    
+                </div>
             
                 <!-- File Upload -->
                 <div class="file-upload-container">
@@ -356,6 +390,16 @@
                         <option value="pack2">Rule Pack 2</option>
                     </select>
                     <button id="addRuleButton" class="add-rule-button">Add Rule</button>
+                </div>
+                <div class="content-box">
+                    <h2>FlexRules</h2>
+                    <p><strong>FlexRules</strong>: A set of transformation rules applied to input fields before populating the output frame.Rules added in JavaScript</p>
+                    
+                    
+                    <h3>Use Case:</h3>
+                    <p>FlexRules should be used when you need to preprocess or transform data in an input field before mapping it to an output field. This is useful for tasks like data normalization, formatting, or deriving new values.</p>
+                    
+                    <p class="example">Example: \( R(\text{Date}) = f(\text{Date}) = \text{Date} + 7 \) (adds 7 days to the input date)</p>
                 </div>
             
                 <!-- User-Defined Rules -->
@@ -395,8 +439,10 @@
                 </div>
             </div>
             <div id="options-wrapper" class="section-wrapper">
-                <h2>Options Section</h2>
-                <p>This is the output section content.</p>
+                <div class="content-box">
+                    <h2>Options Section</h2>
+                    <p><strong>Options Section</strong>: This section allows you to configure the output frame and customize additional settings for the migration process. Use this section to define the structure of the output, set preferences, and enable advanced options.</p>
+                </div>
             
                 <!-- Import Excel Button -->
                 <div class="file-upload">

@@ -188,6 +188,73 @@ main {
 
 }
 
+
+
+.content-box {
+    background-color: var(--secondary-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.75rem;
+    margin-bottom: 12px; /* Remove auto margin to align left */
+    max-width: 600px; /* Slightly smaller max-width */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    color: var(--text-color);
+    font-size: 0.85em; /* Smaller base font size */
+    text-align: left; /* Ensure text aligns to the left */
+}
+
+.content-box h2 {
+    color: var(--accent-color);
+    margin-bottom: 0.5rem; /* Reduced margin */
+    font-size: 1.3em; /* Smaller heading size */
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.25rem;
+}
+
+.content-box h3 {
+    color: var(--accent-color);
+    margin: 0.75rem 0 0.5rem; /* Reduced margin */
+    font-size: 1.1em; /* Smaller subheading size */
+}
+
+.content-box p {
+    line-height: 1.4; /* Tighter line height */
+    margin-bottom: 0.5rem; /* Reduced margin */
+}
+
+.content-box strong {
+    color: var(--accent-color);
+    font-weight: 500;
+}
+
+.content-box .example {
+    background-color: var(--gray-dark);
+    padding: 0.5rem; /* Reduced padding */
+    border-radius: 2px; /* Smaller border radius */
+    border-left: 2px solid var(--gray-light);
+    margin: 0.75rem 0; /* Reduced margin */
+    font-size: 0.9em; /* Smaller example text */
+}
+
+.content-box .math {
+    font-family: monospace;
+    color: var(--gray-light);
+    font-size: 0.95em; /* Smaller math text */
+}
+
+
+
+
+
+body {
+    background-color: #000;
+    padding: 2rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, sans-serif;
+}
+
+
+
+
 .file-label:hover {
     background: var(--gray-medium);
 }
