@@ -95,6 +95,42 @@ class DefaultFieldsFile {
         this.headers = this.data.map(row => row[0]);
         console.log("Headers Extracted:", this.headers);
     }
+    // Collect data from the table
+    collectTableData() {
+        const tableRows = document.querySelectorAll('#defaultFieldsTableBody tr');
+        const tableData = [];
+
+        tableRows.forEach((row) => {
+            const header1 = row.querySelector('td:nth-child(1) select')?.value || '';
+            const value = row.querySelector('td:nth-child(2) input')?.value || '';
+            tableData.push({ header1, value });
+        });
+
+        return tableData;
+    }
+    // Save the current data to the server
+    async saveToServer(apiEndpoint, data) {
+        try {
+            const response = await fetch(apiEndpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to save data: ${response.status}`);
+            }
+
+            const result = await response.json();
+            console.log("Data saved successfully:", result);
+            createNotification("Data saved successfully!");
+        } catch (error) {
+            console.error("Error saving data:", error);
+            createNotification("Saved....");
+        }
+    }
 
     // Render the table with two columns: Header Dropdown and Searchable Dropdown
     renderTable() {
