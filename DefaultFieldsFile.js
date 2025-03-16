@@ -4,6 +4,9 @@
 
 import { createDropdown, createSearchableDropdown,createNotification,createDropdownWithEmpty } from "./utils.js";
 
+
+
+
 // DefaultFieldsFile Class
 export class DefaultFieldsFile {
     constructor() {
@@ -65,6 +68,24 @@ export class DefaultFieldsFile {
             console.error("Error loading Default Fields data:", error);
             throw new Error("Error loading Default Fields data. Please try again.");
         }
+    }
+
+        // Helper function to create a dropdown with a default empty option
+    createDropdownWithEmpty(options, placeholder = '-- Select Header --') {
+        const select = document.createElement('select');
+        const emptyOption = document.createElement('option');
+        emptyOption.value = '';
+        emptyOption.textContent = placeholder;
+        select.appendChild(emptyOption);
+
+        options.forEach((optionText) => {
+            const option = document.createElement('option');
+            option.value = optionText;
+            option.textContent = optionText;
+            select.appendChild(option);
+        });
+
+        return select;
     }
 
     // Update Values Dropdown Based on Header 1 Selection or Search Input
